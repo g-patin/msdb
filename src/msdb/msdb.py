@@ -250,7 +250,7 @@ class DB:
         )
 
         recording = ipw.Button(
-            description='Create record',
+            description='Record creator',
             disabled=False,
             button_style='', # 'success', 'info', 'warning', 'danger' or ''
             tooltip='Click me',            
@@ -326,7 +326,7 @@ class DB:
         )
 
         recording = ipw.Button(
-            description='Create record',
+            description='Record device',
             disabled=False,
             button_style='', # 'success', 'info', 'warning', 'danger' or ''
             tooltip='Click me',            
@@ -403,7 +403,7 @@ class DB:
         )
 
         recording = ipw.Button(
-            description='Create record',
+            description='Record institution',
             disabled=False,
             button_style='', # 'success', 'info', 'warning', 'danger' or ''
             tooltip='Click me',            
@@ -513,8 +513,83 @@ class DB:
         display(ipw.HBox([recording, button_record_output]))
     
     
+    def add_method(self):        
+        """Record a new analytical method in the analytical_methods.txt file
+        """
+
+        # Function to get the existing acronym from the file
+        def get_existing_acronyms():
+            try:
+                df_methods = self.get_methods()
+                existing_acronyms = df_methods['acronym'].values                
+                return existing_acronyms
+            except FileNotFoundError:
+                # If the file does not exist, return an empty set
+                return set()
+            
+        # Function to update the text file if the initials are unique
+        def update_text_file(acronym, name):
+            # Check if the acronym already exists
+            existing_acronyms = list(get_existing_acronyms())
+                        
+            if acronym in existing_acronyms:
+                print(f"Acronym '{acronym}' already exists. Please use a different acronym.")
+            else:
+                df_methods = self.get_methods()
+                df_methods = pd.concat([df_methods, pd.DataFrame(data=[acronym, name], index=['acronym', 'name']).T])
+                df_methods = df_methods.sort_values(by='acronym')
+                df_methods.to_csv(self.folder_db/'analytical_methods.txt',index=False)
+               
+                print(f"Added: {acronym} : {name}")
+
+        # Define ipython widgets
+        name_widget = ipw.Text(        
+            value='',
+            placeholder='Enter a name',
+            description='Name',               
+        )
+
+        acronym_widget = ipw.Text(        
+            value='',
+            placeholder='Enter an acronym',
+            description='Acronym',             
+        )
+
+        recording = ipw.Button(
+            description='Record method',
+            disabled=False,
+            button_style='', # 'success', 'info', 'warning', 'danger' or ''
+            tooltip='Click me',            
+        )
+
+        button_record_output = ipw.Output()
+
+        def button_record_pressed(b):
+            """
+            Save the person info in the persons.txt file.
+            """
+
+            button_record_output.clear_output(wait=True)
+
+            name = name_widget.value.strip()            
+            acronym = acronym_widget.value.strip()
+
+            with button_record_output:
+
+                if name and acronym: # ensure all fields are filled
+                    update_text_file(acronym,name)
+                else:
+                    
+                    print("Please enter all fields (Name, Acronym)")
+
+        recording.on_click(button_record_pressed)
+
+        display(acronym_widget,name_widget)
+        display(ipw.HBox([recording, button_record_output])) 
+    
+    
     def add_object(self):
-        """Add a new object in the DB_objects.csv file"""
+        """Add a new object in the objects_info.csv file"""
 
         db_projects = self.get_db(db='projects')
         projects_list = ['noProject'] + list(db_projects['project_id'].values)
@@ -648,7 +723,7 @@ class DB:
         )
 
         recording = ipw.Button(
-            description='Create record',
+            description='Record object',
             disabled=False,
             button_style='', # 'success', 'info', 'warning', 'danger' or ''
             tooltip='Click me',
@@ -696,13 +771,13 @@ class DB:
 
         def button_record_pressed(b):
             """
-            Save the object info in the object database file (DB_objects.csv).
+            Save the object info in the object database file (objects_info.csv).
             """
 
             with button_record_output:
                 button_record_output.clear_output(wait=True)
 
-                db_objects_file = self.folder_db / 'DB_objects.csv'
+                db_objects_file = self.folder_db / 'objects_info.csv'
                 db_objects = pd.read_csv(db_objects_file)            
                                 
                 creators = [f'{x[0]}, {x[1]}' if isinstance(x[1],str) else x[0] for x in self.get_creators().values]
@@ -773,7 +848,7 @@ class DB:
         
 
     def add_user(self):
-        """Record a new person in the users.txt file
+        """Record a new person in the users_info.txt file
         """
 
         # Function to get the existing initials from the file
@@ -797,7 +872,7 @@ class DB:
                 df_persons = self.get_users()
                 df_persons = pd.concat([df_persons, pd.DataFrame(data=[name,surname,initials], index=['name','surname','initials']).T])
                 df_persons = df_persons.sort_values(by='name')
-                df_persons.to_csv(self.folder_db/'users.txt',index=False)
+                df_persons.to_csv(self.folder_db/'users_info.txt',index=False)
                
                 print(f"Added: {name}, {surname} : {initials}")
 
@@ -822,7 +897,7 @@ class DB:
         )
 
         recording = ipw.Button(
-            description='Create record',
+            description='Record user',
             disabled=False,
             button_style='', # 'success', 'info', 'warning', 'danger' or ''
             tooltip='Click me',            
@@ -833,7 +908,7 @@ class DB:
 
         def button_record_pressed(b):
             """
-            Save the person info in the persons.txt file.
+            Save the person info in the users_info.txt file.
             """
 
             button_record_output.clear_output(wait=True)
@@ -845,7 +920,7 @@ class DB:
             with button_record_output:
 
                 if name and surname and initials: # ensure all fields are filled
-                    update_text_file(self.folder_db / 'users.txt', name, surname, initials)
+                    update_text_file(self.folder_db / 'users_info.txt', name, surname, initials)
                 else:
                     
                     print("Please enter all fields (Name, Surname, Initials)")
@@ -865,7 +940,7 @@ class DB:
         existing_columns = list(db_projects.columns)
         institutions = tuple(self.get_institutions()['name'].values)    
         persons = tuple([f'{x[0]}, {x[1]}' for x in self.get_users()[['name','surname']].values])    
-        methods = self.get_methods()
+        methods = list(self.get_methods()['acronym'].values)
 
         # Define ipython widgets
         project_Id = ipw.Text(        
@@ -932,7 +1007,7 @@ class DB:
         
 
         recording = ipw.Button(
-            description='Create record',
+            description='Record project',
             disabled=False,
             button_style='', # 'success', 'info', 'warning', 'danger' or ''
             tooltip='Click me',
@@ -951,7 +1026,7 @@ class DB:
         )
 
         # Combobox for additional parameters (if any)
-        additional_params = [col for col in existing_columns if col not in ['project_id', 'institution', 'start_date', 'end_date', 'lead_researcher', 'co-researchers', 'keywords', 'methods']]
+        additional_params = [col for col in existing_columns if col not in ['project_id', 'institution', 'start_date', 'end_date', 'project_leader', 'co-researchers', 'keywords', 'methods']]
         additional_param_widgets = {}
         for param in additional_params:
             additional_param_widgets[param] = ipw.Combobox(
@@ -1006,7 +1081,7 @@ class DB:
                         'institution':institution.value, 
                         'start_date':startDate.value, 
                         'end_date':endDate.value,
-                        'lead_researcher':project_leader_initials,  
+                        'project_leader':project_leader_initials,  
                         'co-researchers':coresearchers_initials,                       
                         'keywords':project_keyword.value,
                         'methods':methods_acronym},                                               
@@ -1265,7 +1340,7 @@ class DB:
         )
 
         recording = ipw.Button(
-            description='Create record',
+            description='Record standard',
             disabled=False,
             button_style='', # 'success', 'info', 'warning', 'danger' or ''
             tooltip='Click me',            
@@ -1467,14 +1542,14 @@ class DB:
 
     def get_db(self, db:Optional[str] = 'all'):
 
-        if (Path(self.folder_db) / 'DB_projects.csv').exists():
-            db_projects = pd.read_csv(Path(self.folder_db) / 'DB_projects.csv')
+        if (Path(self.folder_db) / 'projects_info.csv').exists():
+            db_projects = pd.read_csv(Path(self.folder_db) / 'projects_info.csv')
         else:
             print(f'The DB_projects.csv file is not existing. Make sure to create one by running the function "create_DB" from the microfading package.')
             return
         
-        if (Path(self.folder_db) / 'DB_objects.csv').exists():        
-            db_objects = pd.read_csv(Path(self.folder_db) / 'DB_objects.csv')
+        if (Path(self.folder_db) / 'objects_info.csv').exists():        
+            db_objects = pd.read_csv(Path(self.folder_db) / 'objects_info.csv')
         else:
             print(f'The DB_objects.csv file is not existing. Make sure to create one by running the function "create_DB" from the microfading package.')
             return
@@ -1564,9 +1639,8 @@ class DB:
             return
         
         else:
-            df_methods = pd.read_csv((databases_folder / methods_filename), header=None)
-            methods = list(df_methods.values.flatten()) 
-            return methods
+            df_methods = pd.read_csv((databases_folder / methods_filename))            
+            return df_methods
     
     
     def get_objects(self,object_category:Union[str,list]=None, object_type:Union[str,list]=None, object_technique:Union[str,list]=None, object_owner:Union[str,list] = None, project_id:Union[str,list] = None, object_id:Union[str,list] = None, match_all:Optional[bool]=False):
@@ -1677,7 +1751,7 @@ class DB:
         df_projects = pd.read_csv((databases_folder / projects_filename))
 
         if not (databases_folder / projects_filename).exists():
-            print(f'Please create a .csv file called "DB_projects" in the the following folder: {databases_folder}')
+            print(f'Please create a file called "projects_info.csv" in the the following folder: {databases_folder}')
             return
         
 
@@ -1896,7 +1970,7 @@ class DB:
 
 
         deleting = ipw.Button(
-            description='Delete Institution',
+            description='Delete devices',
             disabled=False,
             button_style='', # 'success', 'info', 'warning', 'danger' or ''
             tooltip='Click me',            
@@ -1966,7 +2040,7 @@ class DB:
         )
 
         deleting = ipw.Button(
-            description='Delete Institution',
+            description='Delete institution',
             disabled=False,
             button_style='', # 'success', 'info', 'warning', 'danger' or ''
             tooltip='Click me',            
@@ -2055,6 +2129,146 @@ class DB:
         display(wg_materials)
         display(ipw.HBox([deleting, button_delete_output]))
     
+    
+    def remove_methods(self, acronym:Optional[str] = None):
+        """Remove an analytical method from the database file.
+
+        Parameters
+        ----------
+        acronym : Optional[str], optional
+            Acronym of the method, by default None
+        """
+
+        if acronym == None:
+            acronym = 'Select an acronym'
+
+        df_methods = self.get_methods()
+        method_acronyms = list(df_methods['acronym'])
+
+        if acronym not in  ['Select an acronym'] + method_acronyms:
+            print(f'The acronym you entered "{acronym}" has not been registered in the database.')
+            acronym = 'Select an acronym'
+
+        wg_acronym = ipw.Dropdown(        
+            value=acronym,
+            options=  ['Select an acronym'] + method_acronyms,
+            description='Acronym',
+            style=style,
+            layout=Layout(width="17%", height="30px")        
+        )
+
+        wg_method_name = ipw.Text(
+            value='',
+            description='',
+            disabled=False         
+        )
+
+        deleting = ipw.Button(
+            description='Delete method',
+            disabled=False,
+            button_style='', # 'success', 'info', 'warning', 'danger' or ''
+            tooltip='Click me',            
+        )        
+            
+        button_delete_output = ipw.Output()
+
+
+        def change_acronym(change):            
+            new_acronym = change.new
+            name = df_methods.query(f'acronym == "{new_acronym}"')['name'].values[0]            
+            wg_method_name.value = name
+
+                    
+        def button_delete_pressed(b):
+            """
+            Delete the method info in the analytical_methods.txt file.
+            """
+
+            button_delete_output.clear_output(wait=True)
+            
+            methods_filename = 'analytical_methods.txt'
+            df_methods = self.get_methods()
+            df_methods = df_methods.drop(df_methods[df_methods['acronym'] == wg_acronym.value].index)
+
+            df_methods.to_csv(self.folder_db / methods_filename, index=False)
+
+            with button_delete_output:
+                print(f'Method deleted: {wg_acronym.value}')
+
+
+        # Link the widget button to the function
+        deleting.on_click(button_delete_pressed)
+        wg_acronym.observe(change_acronym, names='value')
+
+        # Display the widgets
+        display(ipw.HBox([wg_acronym, wg_method_name]))
+        display(ipw.HBox([deleting, button_delete_output]))
+
+    
+    def remove_objects(self, object_id:Optional[str] = None):
+        """Remove a  object from the database file.
+
+        Parameters
+        ----------
+        object_id : Optional[str], optional
+            ID number of the object, by default None
+        """
+
+        if object_id == None:
+            object_id = 'Select an object ID'
+
+        object_ids = sorted(list(self.get_objects()['object_id']))
+
+        if object_id not in  ['Select an object ID'] + object_ids:
+            print(f'The object ID you entered "{object_id}" has not been registered in the database.')
+            object_id = 'Select an object ID'
+
+        objectId_widget = ipw.Dropdown(        
+            value=object_id,
+            options=['Select an object ID'] + object_ids,
+            description='Object ID',             
+        )
+
+
+        deleting = ipw.Button(
+            description='Delete object',
+            disabled=False,
+            button_style='', # 'success', 'info', 'warning', 'danger' or ''
+            tooltip='Click me',            
+        )        
+            
+        button_delete_output = ipw.Output()
+
+        
+
+
+        def button_delete_pressed(b):
+            """
+            Delete the object info in the objects_info.csv file.
+            """
+
+            button_delete_output.clear_output(wait=True)
+
+            objects_folder = self.folder_db
+            objects_filename = 'objects_info.csv'
+
+            df_objects = self.get_objects()
+            df_objects = df_objects.drop(df_objects[df_objects['object_id'] == objectId_widget.value].index)
+
+            df_objects.to_csv(objects_folder/objects_filename, index=False)
+
+            with button_delete_output:
+                print(f'Object deleted: {objectId_widget.value}')
+
+
+
+        # Link the widget button to the function
+        deleting.on_click(button_delete_pressed)
+
+        # Display the widgets
+        display(objectId_widget)
+        display(ipw.HBox([deleting, button_delete_output]))
+
     
     def remove_projects(self, project_id:Optional[str] = None):
         """Remove a  project from the database file.
@@ -2301,7 +2515,7 @@ class DB:
         display(ipw.HBox([deleting, button_delete_output]))
 
 
-    def remove_white_standard(self,id:Optional[str] = None):
+    def remove_white_standards(self,id:Optional[str] = None):
         """Remove a white standard from the database file.
 
         Parameters
@@ -2337,7 +2551,7 @@ class DB:
         )           
 
         deleting = ipw.Button(
-            description='Delete user',
+            description='Delete standard',
             disabled=False,
             button_style='', # 'success', 'info', 'warning', 'danger' or ''
             tooltip='Click me',            
