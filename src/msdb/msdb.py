@@ -9,11 +9,80 @@ from IPython.display import display, clear_output
 import re
 
 style = {"description_width": "initial"}
+config_file = Path(__file__).parent / 'db_config.json'
+
+
+def add_db_name():
+    """Add the name and the folder location of databases in the db_config.json file. Use this function when you already have the databases files on your computer but not registered inside the msdb package.
+    """
+
+    wg_path_folder = ipw.Text(
+        description = 'Path folder',
+        placeholder = 'Location of the databases folder on your computer',
+        value = '',
+        style = style, 
+        layout=Layout(width="50%", height="30px"),
+    )
+
+    wg_name_db = ipw.Text(
+        description = 'DB name',
+        placeholder = "Enter a db name",
+        value = '',        
+        style = style,
+        layout=Layout(width="20%", height="30px"),
+    )        
+
+    recording = ipw.Button(
+        description='Save',
+        disabled=False,
+        button_style='', # 'success', 'info', 'warning', 'danger' or ''
+        tooltip='Click me',            
+    )
+
+    button_record_output = ipw.Output()
+
+
+    def button_record_pressed(b):
+        """
+        Save the databases info in the db_config.json file.
+        """
+
+        button_record_output.clear_output(wait=True)
+
+        # check whether the path folder is valid
+        if not Path(wg_path_folder.value).exists():
+            with button_record_output:
+                print(f'The path you entered {wg_path_folder.value} is not valid.')
+            return      
+
+        # Retrieve the config info
+        config = get_config_file()
+
+        # Existing databases
+        databases = config["databases"]
+
+        # Update config with user data
+        databases[wg_name_db.value] = {'path_folder':wg_path_folder.value}
+        config['databases'] = databases            
+
+        # Save the updated config back to the JSON file
+        with open(config_file, "w") as f:
+            json.dump(config, f, indent=4)
+                
+        with button_record_output:
+            print(f'Database info ({wg_name_db.value}) recorded in the db_config.json file.')
+
+
+    recording.on_click(button_record_pressed)
+
+    display(ipw.VBox([wg_name_db, wg_path_folder]))
+    display(ipw.HBox([recording, button_record_output]))
+
+
 
 def get_config_file():
     """Retrieve the content of the db_config.json file."""
-
-    config_file = Path(__file__).parent / 'db_config.json'
+    
     with open(config_file, 'r') as file:
             config = json.load(file)
             return config
@@ -87,8 +156,8 @@ def remove_db(db_name:Optional[str] = None):
     display(ipw.HBox([recording, button_record_output]))
 
 
-def set_db(db_name:Optional[str] = None, path_folder:Optional[str] = None):
-    """Modify the database info stored in the db_config.json file.
+def update_db_folder(db_name:Optional[str] = None, path_folder:Optional[str] = None, widgets:Optional[bool] = True):
+    """Modify the database info stored in the db_config.json file. Only works if some databases are already registered.
 
     Parameters
     ----------
@@ -97,7 +166,18 @@ def set_db(db_name:Optional[str] = None, path_folder:Optional[str] = None):
 
     path_folder : Optional[str], optional
         Location of the databases folder on your computer, by default None
+
+    wdigets : Optional[bool], optional
+        Whether to use the ipywidgets, by default True
+        When False, it automatically modify the database info based on the given parameter values.
     """
+
+    existing_db_names = get_config_file()['databases']
+
+    if len(existing_db_names) == 0:
+        db_names = []
+    else:
+        db_names = list(existing_db_names.keys())
 
     wg_path_folder = ipw.Text(
         description = 'Path folder',
@@ -107,10 +187,11 @@ def set_db(db_name:Optional[str] = None, path_folder:Optional[str] = None):
         layout=Layout(width="50%", height="30px"),
     )
 
-    wg_name_db = ipw.Dropdown(
+    wg_name_db = ipw.Combobox(
         description = 'DB name',
+        placeholder = "Enter a db name",
         value = db_name,
-        options = get_db_names(),
+        options = db_names,
         style = style,
         layout=Layout(width="20%", height="30px"),
     )        
@@ -124,15 +205,44 @@ def set_db(db_name:Optional[str] = None, path_folder:Optional[str] = None):
 
     button_record_output = ipw.Output()
 
-    config_file = Path(__file__).parent / 'db_config.json'
 
-    def button_record_pressed(b):
-        """
-        Save the databases info in the db_config.json file.
-        """
 
-        button_record_output.clear_output(wait=True)
 
+    
+
+    if widgets:
+
+        def button_record_pressed(b):
+            """
+            Save the databases info in the db_config.json file.
+            """
+
+            button_record_output.clear_output(wait=True)
+
+            with open(config_file, "r") as f:
+                config = json.load(f)
+
+            # Existing databases
+            databases = config["databases"]
+
+            # Update config with user data
+            databases[wg_name_db.value] = {'path_folder':wg_path_folder.value}
+            config['databases'] = databases            
+
+            # Save the updated config back to the JSON file
+            with open(config_file, "w") as f:
+                json.dump(config, f, indent=4)
+                
+            with button_record_output:
+                print(f'Database info ({wg_name_db.value}) recorded in the db_config.json file.')
+
+            
+        recording.on_click(button_record_pressed)
+
+        display(ipw.VBox([wg_name_db, wg_path_folder]))
+        display(ipw.HBox([recording, button_record_output]))
+
+    else:
         with open(config_file, "r") as f:
             config = json.load(f)
 
@@ -141,21 +251,11 @@ def set_db(db_name:Optional[str] = None, path_folder:Optional[str] = None):
 
         # Update config with user data
         databases[wg_name_db.value] = {'path_folder':wg_path_folder.value}
-        config['databases'] = databases            
+        config['databases'] = databases
 
         # Save the updated config back to the JSON file
         with open(config_file, "w") as f:
             json.dump(config, f, indent=4)
-
-            
-        with button_record_output:
-            print(f'Database info ({wg_name_db.value}) recorded in the db_config.json file.')
-
-        
-    recording.on_click(button_record_pressed)
-
-    display(ipw.VBox([wg_name_db, wg_path_folder]))
-    display(ipw.HBox([recording, button_record_output]))
 
 
 
@@ -272,7 +372,7 @@ class DB:
             with button_record_output:
 
                 if surname: # ensure the surname field is complete
-                    update_text_file(self.folder_db / 'object_creators.txt', name, surname)
+                    update_text_file(name, surname)
                 else:
                     
                     print("Please enter at least a surname.")
@@ -1678,6 +1778,11 @@ class DB:
 
         if isinstance(project_id, str):
             project_id = [project_id]
+
+        if isinstance(object_id, str):
+            object_id = [object_id]
+
+        
 
 
         df_institutions = self.get_institutions()
