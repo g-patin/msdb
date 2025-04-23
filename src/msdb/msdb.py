@@ -1884,7 +1884,7 @@ class DB:
             institutions = [x for x in institutions if x != 'none']
 
         
-        parameters = ['lead_researcher', 'co-researchers', 'methods', 'institution', 'project_id']
+        parameters = ['project_leader', 'co-researchers', 'methods', 'institution', 'project_id']
         input_values = [PL, coresearchers, methods, institutions, project_id]
 
         filters = {}
