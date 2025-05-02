@@ -496,12 +496,62 @@
 
   <h1>Databases files</h1>
 
-<p>To install the latest version of the msdb package, open a terminal and enter the following command:</p>
-<div class="highlight"><pre><span></span><code>pip install msdb
-</code></pre></div>
-<p>If you wish to install a specific version of the msdb package, the version number can be added to the pip command as illustrated in the following example:</p>
-<div class="highlight"><pre><span></span><code>pip install msdb==0.0.4
-</code></pre></div>
+<p>In this section, you will learn more about the databases files.</p>
+<p>Table 1. Description of the databases files.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><div style="width:205px">File names</div></th>
+<th style="text-align: left;"><div style="width:250px">Description</div></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">devices.txt</td>
+<td style="text-align: left;">set the observer and illuminant default values</td>
+</tr>
+<tr>
+<td style="text-align: left;">institutions.txt</td>
+<td style="text-align: left;">set the use of databases (True or False)</td>
+</tr>
+<tr>
+<td style="text-align: left;">lamps.txt</td>
+<td style="text-align: left;">set the unit of the light dose (MJ/m2, Mlxh, or sec)</td>
+</tr>
+<tr>
+<td style="text-align: left;">object_creators.txt</td>
+<td style="text-align: left;">set the path of the databases files should be stored</td>
+</tr>
+<tr>
+<td style="text-align: left;">object_materials.txt</td>
+<td style="text-align: left;">set the light exposure conditions default values</td>
+</tr>
+<tr>
+<td style="text-align: left;">objects_info.csv</td>
+<td style="text-align: left;">set the observer and illuminant default values</td>
+</tr>
+<tr>
+<td style="text-align: left;">object_techniques.txt</td>
+<td style="text-align: left;">set the use of databases (True or False)</td>
+</tr>
+<tr>
+<td style="text-align: left;">object_types.txt</td>
+<td style="text-align: left;">set the unit of the light dose (MJ/m2, Mlxh, or sec)</td>
+</tr>
+<tr>
+<td style="text-align: left;">projects_info.csv</td>
+<td style="text-align: left;">set the path of the databases files should be stored</td>
+</tr>
+<tr>
+<td style="text-align: left;">users_info.txt</td>
+<td style="text-align: left;">set the light exposure conditions default values</td>
+</tr>
+<tr>
+<td style="text-align: left;">white_standards.txt</td>
+<td style="text-align: left;">set the light exposure conditions default values</td>
+</tr>
+</tbody>
+</table>
 <p>&nbsp;</p>
 <p>To upgrade the package, open a terminal and enter the following command</p>
 <div class="highlight"><pre><span></span><code>pip install --upgrade msdb

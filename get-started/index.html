@@ -611,8 +611,8 @@
 
 <p>In this section, we will give you all the essential information to correctly start using the <code>msdb</code> package.</p>
 <h2 id="1-create-databases-files">1. <strong>Create databases files</strong><a class="headerlink" href="#1-create-databases-files" title="Permanent link">&para;</a></h2>
-<p>If this is the very first time that you are using the <code>msdb</code> be package, you will need to create the databases files. The latter consist of txt and csv files in which you will be able to store information. Check the <a href="https://g-patin.github.io/msdb/databases-files/">databases files section</a> for more information about it.</p>
-<p>To create the databases files, follow the code given below. </p>
+<p>If this is the first time that you are using the <code>msdb</code> be package, you will need to create the databases files. The latter consist of txt and csv files in which you will be able to store information about the analyses of materials. Check the <a href="https://g-patin.github.io/msdb/databases-files/">databases files section</a> for more information about it.</p>
+<p>To create the databases files, follow the lines of code given below. </p>
 <div class="highlight"><pre><span></span><code><span class="c1"># first import the msdb package</span>
 <span class="kn">import</span> <span class="nn">msdb</span>
 </code></pre></div>
@@ -636,11 +636,12 @@
 </figure>
 <p>&nbsp;</p>
 <h2 id="2-central-role-of-the-db-class">2. <strong>Central role of the <code>DB</code> class</strong><a class="headerlink" href="#2-central-role-of-the-db-class" title="Permanent link">&para;</a></h2>
-<p>Once you have created databases and registered them in the msdb config file, you will be able to create an instance of the <code>DB</code> class passing the name of a desired database as argument (see code below). Most of the functions provided by the package can only be accessed through the <code>DB</code> class.<br />
+<p>Once you have created databases and registered them in the msdb config file, you will be able to create an instance of the <code>DB</code> class, passing the name of a registered database as argument (see code below). Most of the functions provided by the package can only be accessed through the <code>DB</code> class.<br />
 &nbsp;</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">msdb</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="n">db</span> <span class="o">=</span> <span class="n">msdb</span><span class="o">.</span><span class="n">DB</span><span class="p">(</span><span class="n">db_name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+<span class="c1"># where &#39;test&#39; is the name of a database that I previously created</span>
 </code></pre></div>
 <p>&nbsp;</p>
 <h2 id="3-four-keywords-function-add-get-update-delete">3. <strong>Four keywords function: add, get, update, delete</strong><a class="headerlink" href="#3-four-keywords-function-add-get-update-delete" title="Permanent link">&para;</a></h2>
