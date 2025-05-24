@@ -1,17 +1,48 @@
-# Welcome to MkDocs
+# Welcome !
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+Welcome on the documentation website of the *material science database* (msdb) python package: an open source and [FAIR](https://www.datafairport.org/) database framework for the analyses of materials. You will find on this website information and tutorials on how to install and use the *msdb* package.
 
-## Commands
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+## New users
 
-## Project layout
+If you are a new user, look at the [Get started section](https://g-patin.github.io/msdb/get-started/). It provides all the basic information you need to know about the package.
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+## Contributions 
+
+We are welcoming any contributions, comments (positive and negative), ideas, etc. This is important to improve the quality of the package and its documentation. If you have encountered a bug or spotted an error, please don't hesitate to contact us by email (see below).
+
+## Contacts
+
+Email: microfading@mailo.com 
+
+------------------------------------------
+
+## What is this package about ?
+
+This package has been designed for users that perform scientific analyses on materials. It aims to provide a generic working environment that can be used to store information about the objects, the materials, the analytical methods, the users, etc. The idea is to have a central location - a folder on your computer - with several txt and csv files for which users will be able to perform basic data management operations : create, read, update, delete (CRUD).   
+
+
+## What does this package provide ?
+
+The package provides two main resources:
+
+- **database files**: create txt and csv files to store any relevant information regarding your analytical tasks.
+
+- **CRUD functions**: a set of functions to create, read, update, and delete the content of the database files.
+
+	
+
+## Website structure
+
+ The documentation follows the structure described by [Daniele Procida](https://diataxis.fr/), which organizes documentation into four different groups (Tutorials, How-to, Explanations, References).
+
+
+## Cite package
+
+If you are using this package for a publication, please cite the package as follows: 
+
+- Patin, G., 2025, *material science database*, Python Package, v.0.0.4, [https://github.com/g-patin/msdb](https://github.com/g-patin/msdb)
+
+ 
+
+
