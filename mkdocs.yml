@@ -18,7 +18,8 @@ nav:
   - Tutorials:  
       - get-started.md   
   - How-to-guides:  
-      - Create an DB class instance: create-DB-class-instance.md      
+      - Create an DB class instance: create-DB-class-instance.md     
+      - Access the config file: get_config.md 
   - Explanation:
       - databases-files.md
       - package-usage.md      

@@ -1,6 +1,6 @@
 # Welcome !
 
-Welcome on the documentation website of the *material science database* (msdb) python package: an open source and [FAIR](https://www.datafairport.org/) database framework for the analyses of materials. You will find on this website information and tutorials on how to install and use the *msdb* package.
+Welcome on the documentation website of the *material science database* (msdb) python package: an open source and [FAIR](https://www.datafairport.org/) database framework for the analyses of materials. You will find on this website information and tutorials on how to install and use the `msdb` package.
 
 
 ## New users
