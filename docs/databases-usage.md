@@ -35,6 +35,8 @@ DB class - name  = test - folder = /home/johhn/Documents/databases
 
 To retrieve the content stored inside the databases files, use the functions that start with the word '**get**'. They are 12 *get* functions for which a short description is provided in Table 1.
 
+&nbsp;
+
 Table 1. Description of the *get* functions.
 
 | <div style="width:205px">Function names</div> | <div style="width:250px">Description</div>
@@ -52,6 +54,13 @@ Table 1. Description of the *get* functions.
 |get_users | Get the name, surname, and initials of persons performing the analyses
 |get_white_standards | Get information about the white standards used for the analyses
 
+For the time being, only two functions (`get_objects` and `get_projects`) allow for arguments to be passed in to perform queries on the returned dataframe (see figure below for an example).
+
+![Alt text](images/db_get_projects.png){: .img-Large align=left }
+/// caption
+get_projects() function without and with arguments.
+/// 
+
 ## 2. **Add / create info**
 
 To add new content inside the databases files, use the functions that start with the word '**add**'. They are 12 *add* functions for which a short description is provided in Table 2.
@@ -68,11 +77,17 @@ Table 2. Description of the *add* functions.
 |add_methods | Add a new analytical method to investigate objects
 |add_objects | Add a new objects to be analyzed
 |add_projects  | Add a new project within which objects are analyzed
-|get_techniques  | Add a new technique used to create objects
+|add_techniques  | Add a new technique used to create objects
 |add_types | Add a new type of objects
 |add_users | Add a new person performing the analyses
 |add_white_standards | Add a new white standard used for the analyses
 
+All the *add* functions return ipywidgets inside which you can enter the requested info before saving them by clicking on the 'record' button (see figure below for an example).
+
+![Alt text](images/db_add_users.png){: .img-small align=left }
+/// caption
+add_users() function.
+/// 
 
 ## 3. **Update info**
 
@@ -80,9 +95,30 @@ Table 2. Description of the *add* functions.
 
 ## 4. **Delete info**
 
+To delete content from the databases files, use the functions that start with the word '**delete**'. They are 12 *delete* functions for which a short description is provided in Table 4.
+
+Table 4. Description of the *delete* functions.
+
+| <div style="width:205px">Function names</div> | <div style="width:250px">Description</div>
+| :--------| :---------
+|delete_creators | Delete a person that created the objects analyzed
+|delete_devices | Delete an analytical device used to analyze objects
+|delete_institutions | Delete an institution performing analyses
+|delete_lamps | Delete a lamp used to perform analyses
+|delete_materials | Delete a material found in objects
+|delete_methods | Delete am analytical method to investigate objects
+|delete_objects | Delete an object to be analyzed
+|delete_projects  | Delete a project within which objects are analyzed
+|delete_techniques  | Delete a technique used to create objects
+|delete_types | Delete a type of objects
+|delete_users | Delete a person performing the analyses
+|delete_white_standards | Delete a white standard used for the analyses
 
 
+You can always run the *delete* function directly without passing arguments. It will always display ipywidgets allowing you to select the item(s) to be deleted and then to click on the 'delete' button to effectively remove the item(s) from the databases files (see figure below for an example). 
 
-&nbsp;
-
+![Alt text](images/db_delete_methods.png){: .img-medium align=left }
+/// caption
+delete_methods() function. In this case, the 'MFT' method will be removed.
+/// 
 
