@@ -91,7 +91,18 @@ add_users() function.
 
 ## 3. **Update info**
 
+For the time being, one can only update the content of the two csv files (objects_info.csv and projects_info.csv), using the functions `update_objects()` and `update_projects()` respectively. These two functions works similarly and the way to use them is described below.
 
+```python
+# For two projects ('2023-011' and '2023-555'), I assigned
+# the value 'JD' (initials for John Doe) for the 'project_leader' column.
+
+db.update_projects(
+	column='project_leader',
+	new_value='JD', 
+	project_id=['2023-011', '2025-555']
+)
+```
 
 ## 4. **Delete info**
 
