@@ -1,24 +1,14 @@
+In this section, you will learn how to manage the content of the *db_config.json* file. We will show you how to:
 
-The *db_config* file is a json file inside which basic information related to the databases are being stored. Currently, only the name and location of the databases are being stored inside the json file. This file enables the `msdb` package to find the location of the databases files so that basic operations (create, read, update, delete)  on the files can be performed. 
+- read content
+- add content
+- update content
+- delete content
 
 
-The json file is located inside the folder of the `msdb` package. To know where it is on your local computer, import the `msdb` package inside a jupyter notebook and simply run the name of the package, as illustrated below. It will return the location of the *\__init__.py* file. The *db_config* file is in the same folder as the  *\__init__.py* file.
+For a description of the json file, consult the [db_config file](https://g-patin.github.io/msdb/db_config/) section.
 
-```python
-import msdb
-```
 
-```python
-msdb
-```
-
-<div class="output-area">
-<pre>
-< module 'msdb' from '/home/john/anaconda3/lib/python3.11/site-packages/msdb/__init__.py'>
-</pre>
-</div>
-
-&nbsp;
 
 ## 1. **Read content**
 
@@ -42,8 +32,39 @@ msdb.get_config_file()
 </div>
 
 
-## 2. **Update content**
+## 2. **Add content**
+
+There are two possibilities to add content to the *db_config* file:
+
+1. You can either create a new database along with the txt and csv files. This will automatically register the database in the *db_config* file (see [create databases](https://g-patin.github.io/msdb/create-databases/)).
+
+2. The databases files have already been created on your local computer and you simply want to register the database inside in the *db_config* file. In that case, you can use the `add_db_name()` function, as illustrated below.
+
+```python
+import msdb
+```
+
+```python
+# This command will display two ipywidgets inside which you will be able
+# to register the database name and folder location.
+msdb.add_db_name()
+```
 
 
-## 3. **Delete content**
+## 3. **Update content**
 
+Updating the content of the *db_config.json* file consists of changing the folder location of an existing database. To perform that operation, use the `update_db_folder()` function, as illustrated below.
+
+![Alt text](images/db_update_folder.png){: .img-large align=left }
+/// caption
+Update the folder location of an existing database
+///
+
+## 4. **Delete content**
+
+To delete a given database from the *db_config.json* file, use the `delete_db()` function, as illustrated below. It will only remove the database from *db_config.json* file. The txt and csv databases files have to delete be manually. 
+
+![Alt text](images/delete_db.png){: .img-small align=left }
+/// caption
+Delete databases from the db_config.json file
+///

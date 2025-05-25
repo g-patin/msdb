@@ -1,10 +1,10 @@
 
-In this section, you will learn more about the databases files. The latter consists of txt and csv files in which information related to the analyses of materials can be stored. A short description of each files is provided in Table 1. 
+In this section, you will learn more about the databases files. The latter consists of txt and csv files in which information related to the analyses of materials can be stored. A short description of each file is provided in Table 1. 
 
 
-The txt files are more basic and usually consist of a list of information. The two csv files are a bit more complex, they gather many information about the objects and projects and often make use of the information available in the txt files. The latter can be viewed as "ressources" that you keep up-to-date that can be used and combined to describe your objects and projects. 
+The txt files are more basic and usually consist of a list of information. The two csv files are a bit more complex, they gather many information about the objects and projects and often make use of the information available in the txt files. The latter can be viewed as "ressources" that you keep up-to-date and that can be used and combined to describe your objects and projects. 
 
-&nbsp;
+The databases files are stored in a folder on your local computer for which you will need to provide a name when [creating the files](https://g-patin.github.io/msdb/create-databases/). In other words, we assign a name to a path object so that we only need to refer to the name for the program to find the databases files on your computer.
 
 
 Table 1. Description of the databases files.
@@ -24,6 +24,6 @@ Table 1. Description of the databases files.
 |white_standards.txt | Information about the white standards used for the analyses
 
 
-The databases files are stored in a folder on your local computer for which you will need to provide a name when [creating the files](https://g-patin.github.io/msdb/create-databases/). In other words, we assign a name to a path object so that we only need to refer to the name for the program to find the databases files on your computer. 
+ 
 
 

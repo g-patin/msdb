@@ -14,7 +14,7 @@ import msdb
 ```
 
 ```python
-# When running this command, a ipywdidget will appear (see below) inside which you will be able to pass in information
+# When running this command, an ipywdidget will appear (see figure below) inside which you will be able to pass in information
 msdb.DB(new_db=True)
 ```
 	
@@ -23,6 +23,14 @@ msdb.DB(new_db=True)
 ![Alt text](images/create_db.png){: .img-Large align=left }
 /// caption
 Ipywidgets to be filled when creating the databases files
+///
+
+
+Once you have filled the ipywidgets (as illustrated below), you can click on the button 'Create databases' which will automatically create the [databases files](https://g-patin.github.io/msdb/databases-files/) inside the designated folder.
+
+![Alt text](images/create_db_filled.png){: .img-Large align=left }
+/// caption
+Ipywidgets filled with the requested info
 ///
 
 

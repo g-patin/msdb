@@ -16,15 +16,16 @@ nav:
   - index.md
   - installation.md    
   - Tutorials:  
-      - get-started.md   
+      - get-started.md
+      - databases-usage.md   
+     
   - How-to-guides:  
-      - Create an DB class instance: create-DB-class-instance.md    
+      - Create a DB class instance: create-DB-class-instance.md    
       - create-databases.md 
       - Manage the db_config file: manage_db_config.md 
   - Explanation:
       - databases-files.md
-      - db_config file: db_config.md
-      - package-usage.md      
+      - db_config file: db_config.md          
   - References: references.md 
   
 plugins:
