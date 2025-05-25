@@ -41,7 +41,7 @@ The package provides two main resources:
 
 If you are using this package for a publication, please cite the package as follows: 
 
-- Patin, G., 2025, *material science database*, Python Package, v.0.0.4, [https://github.com/g-patin/msdb](https://github.com/g-patin/msdb)
+- Patin, G., 2025, *material science database*, Python Package, v.0.0.5, [https://github.com/g-patin/msdb](https://github.com/g-patin/msdb)
 
  
 
