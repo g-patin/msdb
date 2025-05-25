@@ -705,6 +705,7 @@ DB class - name  = test - folder = /home/johhn/Documents/databases
 
 <h2 id="1-get-read-info">1. <strong>Get / read info</strong><a class="headerlink" href="#1-get-read-info" title="Permanent link">&para;</a></h2>
 <p>To retrieve the content stored inside the databases files, use the functions that start with the word '<strong>get</strong>'. They are 12 <em>get</em> functions for which a short description is provided in Table 1.</p>
+<p>&nbsp;</p>
 <p>Table 1. Description of the <em>get</em> functions.</p>
 <table>
 <thead>
@@ -764,6 +765,13 @@ DB class - name  = test - folder = /home/johhn/Documents/databases
 </tr>
 </tbody>
 </table>
+<p>For the time being, only two functions (<code>get_objects</code> and <code>get_projects</code>) allow for arguments to be passed in to perform queries on the returned dataframe (see figure below for an example).</p>
+<figure>
+<p><img align="left" alt="Alt text" class="img-Large" src="../images/db_get_projects.png" /></p>
+<figcaption>
+<p>get_projects() function without and with arguments.</p>
+</figcaption>
+</figure>
 <h2 id="2-add-create-info">2. <strong>Add / create info</strong><a class="headerlink" href="#2-add-create-info" title="Permanent link">&para;</a></h2>
 <p>To add new content inside the databases files, use the functions that start with the word '<strong>add</strong>'. They are 12 <em>add</em> functions for which a short description is provided in Table 2.</p>
 <p>Table 2. Description of the <em>add</em> functions.</p>
@@ -808,7 +816,7 @@ DB class - name  = test - folder = /home/johhn/Documents/databases
 <td style="text-align: left;">Add a new project within which objects are analyzed</td>
 </tr>
 <tr>
-<td style="text-align: left;">get_techniques</td>
+<td style="text-align: left;">add_techniques</td>
 <td style="text-align: left;">Add a new technique used to create objects</td>
 </tr>
 <tr>
@@ -825,9 +833,82 @@ DB class - name  = test - folder = /home/johhn/Documents/databases
 </tr>
 </tbody>
 </table>
+<p>All the <em>add</em> functions return ipywidgets inside which you can enter the requested info before saving them by clicking on the 'record' button (see figure below for an example).</p>
+<figure>
+<p><img align="left" alt="Alt text" class="img-small" src="../images/db_add_users.png" /></p>
+<figcaption>
+<p>add_users() function.</p>
+</figcaption>
+</figure>
 <h2 id="3-update-info">3. <strong>Update info</strong><a class="headerlink" href="#3-update-info" title="Permanent link">&para;</a></h2>
 <h2 id="4-delete-info">4. <strong>Delete info</strong><a class="headerlink" href="#4-delete-info" title="Permanent link">&para;</a></h2>
-<p>&nbsp;</p>
+<p>To delete content from the databases files, use the functions that start with the word '<strong>delete</strong>'. They are 12 <em>delete</em> functions for which a short description is provided in Table 4.</p>
+<p>Table 4. Description of the <em>delete</em> functions.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><div style="width:205px">Function names</div></th>
+<th style="text-align: left;"><div style="width:250px">Description</div></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">delete_creators</td>
+<td style="text-align: left;">Delete a person that created the objects analyzed</td>
+</tr>
+<tr>
+<td style="text-align: left;">delete_devices</td>
+<td style="text-align: left;">Delete an analytical device used to analyze objects</td>
+</tr>
+<tr>
+<td style="text-align: left;">delete_institutions</td>
+<td style="text-align: left;">Delete an institution performing analyses</td>
+</tr>
+<tr>
+<td style="text-align: left;">delete_lamps</td>
+<td style="text-align: left;">Delete a lamp used to perform analyses</td>
+</tr>
+<tr>
+<td style="text-align: left;">delete_materials</td>
+<td style="text-align: left;">Delete a material found in objects</td>
+</tr>
+<tr>
+<td style="text-align: left;">delete_methods</td>
+<td style="text-align: left;">Delete am analytical method to investigate objects</td>
+</tr>
+<tr>
+<td style="text-align: left;">delete_objects</td>
+<td style="text-align: left;">Delete an object to be analyzed</td>
+</tr>
+<tr>
+<td style="text-align: left;">delete_projects</td>
+<td style="text-align: left;">Delete a project within which objects are analyzed</td>
+</tr>
+<tr>
+<td style="text-align: left;">delete_techniques</td>
+<td style="text-align: left;">Delete a technique used to create objects</td>
+</tr>
+<tr>
+<td style="text-align: left;">delete_types</td>
+<td style="text-align: left;">Delete a type of objects</td>
+</tr>
+<tr>
+<td style="text-align: left;">delete_users</td>
+<td style="text-align: left;">Delete a person performing the analyses</td>
+</tr>
+<tr>
+<td style="text-align: left;">delete_white_standards</td>
+<td style="text-align: left;">Delete a white standard used for the analyses</td>
+</tr>
+</tbody>
+</table>
+<p>You can always run the <em>delete</em> function directly without passing arguments. It will always display ipywidgets allowing you to select the item(s) to be deleted and then to click on the 'delete' button to effectively remove the item(s) from the databases files (see figure below for an example). </p>
+<figure>
+<p><img align="left" alt="Alt text" class="img-medium" src="../images/db_delete_methods.png" /></p>
+<figcaption>
+<p>delete_methods() function. In this case, the 'MFT' method will be removed.</p>
+</figcaption>
+</figure>
 
 
 
