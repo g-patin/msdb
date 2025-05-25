@@ -841,6 +841,16 @@ DB class - name  = test - folder = /home/johhn/Documents/databases
 </figcaption>
 </figure>
 <h2 id="3-update-info">3. <strong>Update info</strong><a class="headerlink" href="#3-update-info" title="Permanent link">&para;</a></h2>
+<p>For the time being, one can only update the content of the two csv files (objects_info.csv and projects_info.csv), using the functions <code>update_objects()</code> and <code>update_projects()</code> respectively. These two functions works similarly and the way to use them is described below.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># For two projects (&#39;2023-011&#39; and &#39;2023-555&#39;), I assigned</span>
+<span class="c1"># the value &#39;JD&#39; (initials for John Doe) for the &#39;project_leader&#39; column.</span>
+
+<span class="n">db</span><span class="o">.</span><span class="n">update_projects</span><span class="p">(</span>
+    <span class="n">column</span><span class="o">=</span><span class="s1">&#39;project_leader&#39;</span><span class="p">,</span>
+    <span class="n">new_value</span><span class="o">=</span><span class="s1">&#39;JD&#39;</span><span class="p">,</span> 
+    <span class="n">project_id</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;2023-011&#39;</span><span class="p">,</span> <span class="s1">&#39;2025-555&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+</code></pre></div>
 <h2 id="4-delete-info">4. <strong>Delete info</strong><a class="headerlink" href="#4-delete-info" title="Permanent link">&para;</a></h2>
 <p>To delete content from the databases files, use the functions that start with the word '<strong>delete</strong>'. They are 12 <em>delete</em> functions for which a short description is provided in Table 4.</p>
 <p>Table 4. Description of the <em>delete</em> functions.</p>
