@@ -284,6 +284,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../databases-usage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Databases usage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -339,7 +360,7 @@
         
   
   <span class="md-ellipsis">
-    Create an DB class instance
+    Create a DB class instance
   </span>
   
 
@@ -428,18 +449,27 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-update-content" class="md-nav__link">
+  <a href="#2-add-content" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Update content
+      2. Add content
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-delete-content" class="md-nav__link">
+  <a href="#3-update-content" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Delete content
+      3. Update content
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-delete-content" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Delete content
     </span>
   </a>
   
@@ -538,27 +568,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../package-usage/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Package usage
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -620,18 +629,27 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-update-content" class="md-nav__link">
+  <a href="#2-add-content" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Update content
+      2. Add content
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-delete-content" class="md-nav__link">
+  <a href="#3-update-content" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Delete content
+      3. Update content
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-delete-content" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Delete content
     </span>
   </a>
   
@@ -654,19 +672,14 @@
 
   <h1>Manage the db_config file</h1>
 
-<p>The <em>db_config</em> file is a json file inside which basic information related to the databases are being stored. Currently, only the name and location of the databases are being stored inside the json file. This file enables the <code>msdb</code> package to find the location of the databases files so that basic operations (create, read, update, delete)  on the files can be performed. </p>
-<p>The json file is located inside the folder of the <code>msdb</code> package. To know where it is on your local computer, import the <code>msdb</code> package inside a jupyter notebook and simply run the name of the package, as illustrated below. It will return the location of the <em>__init__.py</em> file. The <em>db_config</em> file is in the same folder as the  <em>__init__.py</em> file.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">msdb</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="n">msdb</span>
-</code></pre></div>
-<div class="output-area">
-<pre>
-< module 'msdb' from '/home/john/anaconda3/lib/python3.11/site-packages/msdb/__init__.py'>
-</pre>
-</div>
-
-<p>&nbsp;</p>
+<p>In this section, you will learn how to manage the content of the <em>db_config.json</em> file. We will show you how to:</p>
+<ul>
+<li>read content</li>
+<li>add content</li>
+<li>update content</li>
+<li>delete content</li>
+</ul>
+<p>For a description of the json file, consult the <a href="https://g-patin.github.io/msdb/db_config/">db_config file</a> section.</p>
 <h2 id="1-read-content">1. <strong>Read content</strong><a class="headerlink" href="#1-read-content" title="Permanent link">&para;</a></h2>
 <p>To read the content of the <em>db_config</em> file, use the following lines of code:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">msdb</span>
@@ -682,8 +695,38 @@
 </pre>
 </div>
 
-<h2 id="2-update-content">2. <strong>Update content</strong><a class="headerlink" href="#2-update-content" title="Permanent link">&para;</a></h2>
-<h2 id="3-delete-content">3. <strong>Delete content</strong><a class="headerlink" href="#3-delete-content" title="Permanent link">&para;</a></h2>
+<h2 id="2-add-content">2. <strong>Add content</strong><a class="headerlink" href="#2-add-content" title="Permanent link">&para;</a></h2>
+<p>There are two possibilities to add content to the <em>db_config</em> file:</p>
+<ol>
+<li>
+<p>You can either create a new database along with the txt and csv files. This will automatically register the database in the <em>db_config</em> file (see <a href="https://g-patin.github.io/msdb/create-databases/">create databases</a>).</p>
+</li>
+<li>
+<p>The databases files have already been created on your local computer and you simply want to register the database inside in the <em>db_config</em> file. In that case, you can use the <code>add_db_name()</code> function, as illustrated below.</p>
+</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">msdb</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># This command will display two ipywidgets inside which you will be able</span>
+<span class="c1"># to register the database name and folder location.</span>
+<span class="n">msdb</span><span class="o">.</span><span class="n">add_db_name</span><span class="p">()</span>
+</code></pre></div>
+<h2 id="3-update-content">3. <strong>Update content</strong><a class="headerlink" href="#3-update-content" title="Permanent link">&para;</a></h2>
+<p>Updating the content of the <em>db_config.json</em> file consists of changing the folder location of an existing database. To perform that operation, use the <code>update_db_folder()</code> function, as illustrated below.</p>
+<figure>
+<p><img align="left" alt="Alt text" class="img-large" src="../images/db_update_folder.png" /></p>
+<figcaption>
+<p>Update the folder location of an existing database</p>
+</figcaption>
+</figure>
+<h2 id="4-delete-content">4. <strong>Delete content</strong><a class="headerlink" href="#4-delete-content" title="Permanent link">&para;</a></h2>
+<p>To delete a given database from the <em>db_config.json</em> file, use the <code>delete_db()</code> function, as illustrated below. It will only remove the database from <em>db_config.json</em> file. The txt and csv databases files have to delete be manually. </p>
+<figure>
+<p><img align="left" alt="Alt text" class="img-small" src="../images/delete_db.png" /></p>
+<figcaption>
+<p>Delete databases from the db_config.json file</p>
+</figcaption>
+</figure>
 
 
 

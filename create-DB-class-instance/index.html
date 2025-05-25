@@ -9,7 +9,7 @@
       
       
       
-        <link rel="prev" href="../get-started/">
+        <link rel="prev" href="../databases-usage/">
       
       
         <link rel="next" href="../create-databases/">
@@ -20,7 +20,7 @@
     
     
       
-        <title>Create an DB class instance - msdb</title>
+        <title>Create a DB class instance - msdb</title>
       
     
     
@@ -102,7 +102,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Create an DB class instance
+              Create a DB class instance
             
           </span>
         </div>
@@ -284,6 +284,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../databases-usage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Databases usage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -346,7 +367,7 @@
           
   
   <span class="md-ellipsis">
-    Create an DB class instance
+    Create a DB class instance
   </span>
   
 
@@ -357,7 +378,7 @@
         
   
   <span class="md-ellipsis">
-    Create an DB class instance
+    Create a DB class instance
   </span>
   
 
@@ -529,27 +550,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../package-usage/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Package usage
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -634,7 +634,7 @@
                   
 
 
-  <h1>Create an DB class instance</h1>
+  <h1>Create a DB class instance</h1>
 
 <p>The functions provided by the <em>msdb</em> package only work on an instance of a <code>DB</code> class. The creation of an instance of a <code>DB</code> class is a two-steps procedure and is described below:</p>
 <h2 id="1-create-the-database-files">1. <strong>Create the database files</strong><a class="headerlink" href="#1-create-the-database-files" title="Permanent link">&para;</a></h2>
@@ -649,7 +649,7 @@
 </ol>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">msdb</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="c1"># When running this command, a ipywdidget will appear (see below) inside which you will be able to pass in information</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># When running this command, an ipywdidget will appear (see figure below) inside which you will be able to pass in information</span>
 <span class="n">msdb</span><span class="o">.</span><span class="n">DB</span><span class="p">(</span><span class="n">new_db</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 <p>&nbsp;</p>
@@ -657,6 +657,13 @@
 <p><img align="left" alt="Alt text" class="img-Large" src="../images/create_db.png" /></p>
 <figcaption>
 <p>Ipywidgets to be filled when creating the databases files</p>
+</figcaption>
+</figure>
+<p>Once you have filled the ipywidgets (as illustrated below), you can click on the button 'Create databases' which will automatically create the <a href="https://g-patin.github.io/msdb/databases-files/">databases files</a> inside the designated folder.</p>
+<figure>
+<p><img align="left" alt="Alt text" class="img-Large" src="../images/create_db_filled.png" /></p>
+<figcaption>
+<p>Ipywidgets filled with the requested info</p>
 </figcaption>
 </figure>
 <h2 id="2-create-db-class-instance">2. <strong>Create DB class instance</strong><a class="headerlink" href="#2-create-db-class-instance" title="Permanent link">&para;</a></h2>
