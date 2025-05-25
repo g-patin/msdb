@@ -79,7 +79,6 @@ def add_db_name():
     display(ipw.HBox([recording, button_record_output]))
 
 
-
 def get_config_file():
     """Retrieve the content of the db_config.json file."""
     
@@ -103,7 +102,7 @@ def get_db_names():
                 return None  
 
 
-def remove_db(db_name:Optional[str] = None):
+def delete_db(db_name:Optional[str] = None):
     """Remove a database from the db_config.json file."""
 
     wg_name_db = ipw.Dropdown(
@@ -297,20 +296,20 @@ class DB:
                 print(f'The database name you entered ({self.name_db}) has already been created. Either set the "new_db" parameter to False or choose a different name_db.')
 
         # Check whether databases were created
-        if len(self.get_db_config()['databases']) == 0:
+        if len(get_config_file()['databases']) == 0:
             print('There are no databases registered. Create a database to start using the functions available through the DB class.')
             return None
         
         # Select the first database name if name_db is None
         if name_db == None:
-            self.name_db = list(self.get_db_config()['databases'].keys())[0]
+            self.name_db = list(get_config_file()['databases'].keys())[0]
 
         else:
-            if not self.name_db in list(self.get_db_config()['databases'].keys()):
+            if not self.name_db in list(get_config_file()['databases'].keys()):
                 print(f'The name_db value you entered ({self.name_db}) has not been registered. Either set the "new_db" parameter to True or select a registered database name.')
 
             else:
-                self.folder_db = Path(self.get_db_config()['databases'][self.name_db]['path_folder'])
+                self.folder_db = Path(get_config_file()['databases'][self.name_db]['path_folder'])
               
 
     def _init_config(self):
@@ -322,7 +321,11 @@ class DB:
             return None
         
     
-    def add_creator(self):
+    def __repr__(self):
+        return f'DB class - name = {self.name_db}  - folder = {self.folder_db}'
+
+    
+    def add_creators(self):
         """Record a new object creator in the object_creators.txt file
         """
 
@@ -340,13 +343,15 @@ class DB:
         name_widget = ipw.Text(        
             value='',
             placeholder='Enter a name (optional)',
-            description='Name',               
+            description='Name', 
+            style=style              
         )
 
         surname_widget = ipw.Text(        
             value='',
             placeholder='Enter a surname',
-            description='Surname',             
+            description='Surname',    
+            style=style         
         )
 
         recording = ipw.Button(
@@ -384,7 +389,7 @@ class DB:
         display(ipw.HBox([recording, button_record_output]))
 
 
-    def add_device(self):
+    def add_devices(self):
         """Record a new device in the devices.txt file
         """
 
@@ -410,19 +415,25 @@ class DB:
         wg_id = ipw.Text(        
             value='',
             placeholder='Enter an ID',
-            description='Device ID',               
+            description='Device ID',  
+            style=style,
+            layout=Layout(width="40%", height="30px")             
         )
 
         wg_name = ipw.Text(        
             value='',
             placeholder='Enter name',
-            description='Device name',             
+            description='Device name',
+            style=style,
+            layout=Layout(width="40%", height="30px")             
         )
 
         wg_description = ipw.Text(        
             value='',
             placeholder='Briefly describe the device purpose (Optional)',
-            description='Device description',             
+            description='Device description',   
+            style=style,
+            layout=Layout(width="40%", height="30px")       
         )
 
         recording = ipw.Button(
@@ -460,7 +471,7 @@ class DB:
         display(ipw.HBox([recording, button_record_output]))
 
 
-    def add_institution(self):        
+    def add_institutions(self):        
         """Record a new institution in the institutions.txt file
         """
 
@@ -493,13 +504,17 @@ class DB:
         name_widget = ipw.Text(        
             value='',
             placeholder='Enter a name',
-            description='Name',               
+            description='Name', 
+            style=style,
+            layout=Layout(width="40%", height="30px")              
         )
 
         acronym_widget = ipw.Text(        
             value='',
             placeholder='Enter an acronym',
-            description='Acronym',             
+            description='Acronym', 
+            style=style,
+            layout=Layout(width="40%", height="30px")            
         )
 
         recording = ipw.Button(
@@ -535,7 +550,85 @@ class DB:
         display(ipw.HBox([recording, button_record_output]))       
     
     
-    def add_material(self, name:Optional[str] = None):
+    def add_lamps(self):
+        """Record a new lamp in the lamps.txt file
+        """
+
+        # Function to get the existing lamps ID from the file
+        def get_existing_lamps():
+            try:
+                df_lamps = self.get_lamps()
+                existing_lamps = df_lamps['ID'].values                
+                return existing_lamps
+            except FileNotFoundError:
+                # If the file does not exist, return an empty set
+                return set()
+            
+        # Function to update the text file if the ID is unique
+        def update_text_file(ID, description):
+            # Check if the ID already exists
+            existing_lamps = get_existing_lamps()
+                        
+            if ID in existing_lamps:
+                print(f"ID '{ID}' already exists. Please use a different ID.")
+            else:
+                df_lamps = self.get_lamps()
+                df_lamps = pd.concat([df_lamps, pd.DataFrame(data=[ID,description], index=['ID','description']).T])
+                df_lamps = df_lamps.sort_values(by='ID')
+                df_lamps.to_csv(self.folder_db/'lamps.txt',index=False)
+               
+                print(f"Added: {ID} : {description}")
+
+        # Define ipython widgets
+        wg_ID = ipw.Text(        
+            value='',
+            placeholder='Enter an ID',
+            description='ID', 
+            layout=Layout(width="40%", height="30px"),
+            style=style,              
+        )
+
+        wg_description = ipw.Text(        
+            value='',
+            placeholder='Enter a brief description',
+            description='Description', 
+            layout=Layout(width="40%", height="30px"),
+            style=style,            
+        )
+
+        recording = ipw.Button(
+            description='Record lamp',
+            disabled=False,
+            button_style='', # 'success', 'info', 'warning', 'danger' or ''
+            tooltip='Click me',            
+        )
+
+        button_record_output = ipw.Output()
+
+        def button_record_pressed(b):
+            """
+            Save the lamp info in the lamps.txt file.
+            """
+
+            button_record_output.clear_output(wait=True)
+
+            id = wg_ID.value.strip()            
+            description = wg_description.value.strip()
+
+            with button_record_output:
+
+                if id and description: # ensure all fields are filled
+                    update_text_file(id, description)
+                else:                    
+                    print("Please enter all fields (ID, description)")
+
+        recording.on_click(button_record_pressed)
+
+        display(wg_ID,wg_description)
+        display(ipw.HBox([recording, button_record_output]))
+    
+    
+    def add_materials(self, name:Optional[str] = None):
         """Register a new object material.
 
         Returns
@@ -549,7 +642,9 @@ class DB:
         wg_material = ipw.Text(        
             value=name,
             placeholder='Enter a name',
-            description='Material',               
+            description='Material',  
+            style=style,
+            layout=Layout(width="40%", height="30px")             
         )    
 
         recording = ipw.Button(
@@ -613,7 +708,7 @@ class DB:
         display(ipw.HBox([recording, button_record_output]))
     
     
-    def add_method(self):        
+    def add_methods(self):        
         """Record a new analytical method in the analytical_methods.txt file
         """
 
@@ -646,13 +741,17 @@ class DB:
         name_widget = ipw.Text(        
             value='',
             placeholder='Enter a name',
-            description='Name',               
+            description='Name', 
+            style=style,
+            layout=Layout(width="40%", height="30px")              
         )
 
         acronym_widget = ipw.Text(        
             value='',
             placeholder='Enter an acronym',
-            description='Acronym',             
+            description='Acronym',   
+            style=style,
+            layout=Layout(width="40%", height="30px")          
         )
 
         recording = ipw.Button(
@@ -688,13 +787,13 @@ class DB:
         display(ipw.HBox([recording, button_record_output])) 
     
     
-    def add_object(self):
+    def add_objects(self):
         """Add a new object in the objects_info.csv file"""
 
-        db_projects = self.get_db(db='projects')
+        db_projects = self.get_projects()
         projects_list = ['noProject'] + list(db_projects['project_id'].values)
 
-        db_objects = self.get_db(db='objects')
+        db_objects = self.get_objects()
         existing_columns = list(db_objects.columns)
 
         creators_file = pd.read_csv(self.folder_db / 'object_creators.txt')
@@ -826,9 +925,7 @@ class DB:
             description='Record object',
             disabled=False,
             button_style='', # 'success', 'info', 'warning', 'danger' or ''
-            tooltip='Click me',
-            #layout=Layout(width="50%", height="30px"),
-            #style=style,
+            tooltip='Click me',            
             #icon='check' # (FontAwesome names without the `fa-` prefix)
         )        
         
@@ -947,7 +1044,7 @@ class DB:
         display(ipw.HBox([recording, button_record_output]))
         
 
-    def add_user(self):
+    def add_users(self):
         """Record a new person in the users_info.txt file
         """
 
@@ -1033,7 +1130,7 @@ class DB:
         display(ipw.HBox([recording, button_record_output]))
 
 
-    def add_project(self, project_id:Optional[str] = None):
+    def add_projects(self, project_id:Optional[str] = None):
         """Add a new project in the projects_info.csv file"""
 
         db_projects = self.get_projects()
@@ -1224,7 +1321,7 @@ class DB:
         display(ipw.HBox([recording, button_record_output]))
 
 
-    def add_technique(self):
+    def add_techniques(self):
         """Register a new object technique.
 
         Returns
@@ -1238,7 +1335,9 @@ class DB:
         technique_widget = ipw.Text(        
             value='',
             placeholder='Enter a name',
-            description='Technique',               
+            description='Technique',   
+            style=style,
+            layout=Layout(width="40%", height="30px")            
         )    
 
         recording = ipw.Button(
@@ -1314,7 +1413,7 @@ class DB:
         display(ipw.HBox([recording, button_record_output]))
 
     
-    def add_type(self, name:Optional[str] = None):
+    def add_types(self, name:Optional[str] = None):
         """Register a new object type.
 
         Returns
@@ -1328,7 +1427,9 @@ class DB:
         wg_type = ipw.Text(        
             value=name,
             placeholder='Enter a name',
-            description='Type',               
+            description='Type',
+            style=style,
+            layout=Layout(width="40%", height="30px")               
         )    
 
         recording = ipw.Button(
@@ -1393,7 +1494,7 @@ class DB:
         display(ipw.HBox([recording, button_record_output]))
     
     
-    def add_white_standard(self):
+    def add_white_standards(self):
         """Record a new white standard in the white_standards.txt file
         """
 
@@ -1639,39 +1740,7 @@ class DB:
             print(f'The file {Path(self.folder_db) / "object_creators.txt"} is not existing. Make sure to create one by running the function "create_DB" from the microfading package.')
             return
 
-
-    def get_db(self, db:Optional[str] = 'all'):
-
-        if (Path(self.folder_db) / 'projects_info.csv').exists():
-            db_projects = pd.read_csv(Path(self.folder_db) / 'projects_info.csv')
-        else:
-            print(f'The DB_projects.csv file is not existing. Make sure to create one by running the function "create_DB" from the microfading package.')
-            return
-        
-        if (Path(self.folder_db) / 'objects_info.csv').exists():        
-            db_objects = pd.read_csv(Path(self.folder_db) / 'objects_info.csv')
-        else:
-            print(f'The DB_objects.csv file is not existing. Make sure to create one by running the function "create_DB" from the microfading package.')
-            return
-
-        if db == 'all':
-            return db_projects, db_objects
-        
-        elif db == 'projects':
-            return db_projects
-        
-        elif db == 'objects':
-            return db_objects
-
-
-    def get_db_config(self):
-        "Retrieve the content of the db_config.json file"
-                
-        with open(self.config_file, 'r') as file:
-            config = json.load(file)
-            return config  
     
-           
     def get_users(self):
         
         filename = 'users_info.txt'
@@ -1706,6 +1775,17 @@ class DB:
             return
 
 
+    def get_lamps(self):
+
+        if (Path(self.folder_db) / 'lamps.txt').exists():
+            df_lamps = pd.read_csv(Path(self.folder_db) / 'lamps.txt')
+            return df_lamps
+        
+        else:
+            print(f'The file {Path(self.folder_db) / "lamps.txt"} is not existing. Make sure to create one by running the function "create_DB" from the microfading package.')
+            return  
+    
+    
     def get_materials(self):
         """Retrieve the object materials.
         """
@@ -1744,13 +1824,44 @@ class DB:
     
     
     def get_objects(self,object_category:Union[str,list]=None, object_type:Union[str,list]=None, object_technique:Union[str,list]=None, object_owner:Union[str,list] = None, project_id:Union[str,list] = None, object_id:Union[str,list] = None, match_all:Optional[bool]=False):
-        """Retrieve the objects info.
+        """Retrieve information about the objects
+
+        Parameters
+        ----------
+        object_category : Union[str,list], optional
+            Category of objects, by default None
+            There are only four categories of objects ('heritage', 'model', 'reference', 'sample')
+            If only one category is entered, you may enter it as a string, otherwise use a list.
+        
+        object_type : Union[str,list], optional
+            Object type(s) for describing objects, by default None
+            If only one type is entered, you may enter it as a string, otherwise use a list.
+            For a list of all the types mentioned, use the function "get_types()".
+        
+        object_technique : Union[str,list], optional
+            Technique(s) used to create the objects, by default None
+            If only one technique is entered, you may enter it as a string, otherwise use a list.
+            For a list of all the techniques mentioned, use the function "get_techniques()".
+        
+        object_owner : Union[str,list], optional
+            Institution(s) that own the objects, by default None
+            If only one institution is entered, you may enter it as a string, otherwise use a list.
+        
+        project_id : Union[str,list], optional
+            ID number of one or several projects, by default None
+            If only one ID is entered, you may enter it as a string, otherwise use a list.
+        
+        object_id : Union[str,list], optional
+            _description_, by default None
+        
+        match_all : Optional[bool], optional
+            Whether all the wanted queries should match, by default False
 
         Returns
         -------
         pandas dataframe
-            info about registered objects.
-        """
+            It returns the object info inside a dataframe where each line corresponds to a single object.
+        """       
 
         databases_folder = self.folder_db
         objects_filename = 'objects_info.csv'
@@ -1950,47 +2061,95 @@ class DB:
             return types
 
     
-    def update_db_projects(self, new: str, old:Optional[str] = None):
+    def update_projects(self, column:str, new_value: str, project_id:Union[str,list] = 'all'):
+        """Update the content of the projects_info.csv file.
 
-        if (Path(self.folder_db) / 'DB_projects.csv').exists():
+        Parameters
+        ----------
+        column : str
+            Select which column should be updated
+        
+        new_value : str
+            New value to be written in the projects_info.csv file
+        
+        project_id : Union[str,list], optional
+            Select which project_id(s) (i.e. row(s)) should be updated, by default 'all'
+            If you only wish to update the value for a single project, you can enter the project_id as a string.
+            If you wish to update the value for several projects, enter the project_ids as strings inside a list
+            When 'all', it will the update the value for all the projects.
+        """       
+        
+        if (Path(self.folder_db) / 'projects_info.csv').exists():
             
-            db_projects = self.get_db(db='projects')
-            db_projects[new] = ''
-            
-            if old != None:
-                if old in db_projects.columns:
-                    db_projects.drop(old, axis=1, inplace=True)
-                else:
-                    print(f'The column {old} cannot be removed because it does not exist.')
+            db_projects = self.get_projects().set_index('project_id')
 
-            db_projects.to_csv(Path(self.folder_db) / 'DB_projects.csv',index=False)
-            print('DB_projects successfully updated.')
+            if project_id == 'all':
+                project_id = db_projects.index
+            elif isinstance(project_id, str):
+                project_id = [project_id]
+
+               
+            for project in project_id:
+
+                if project not in db_projects.index:
+                    print(f'Error ! The project ID {project} is not registered in the projects_info.csv file.')
+                    return
+                
+                db_projects.loc[project, column] = new_value         
+            
+            
+            db_projects.to_csv(Path(self.folder_db) / 'projects_info.csv',index=True)
+            print('projects_info.csv file successfully updated.')
 
         else:
             print('No databases have been created yet.')
         
 
-    def update_db_objects(self, new: str, old:Optional[str] = None):
+    def update_objects(self, column:str, new_value: str, project_id:Union[str,list] = 'all'):
+        """Update the content of the objects_info.csv file.
 
-        if (Path(self.folder_db) / 'DB_objects.csv').exists():
+        Parameters
+        ----------
+        column : str
+            Select which column should be updated
+        
+        new_value : str
+            New value to be written in the objects_info.csv file
+        
+        object_id : Union[str,list], optional
+            Select which object_id(s) (i.e. row(s)) should be updated, by default 'all'
+            If you only wish to update the value for a single object, you can enter the object_id as a string.
+            If you wish to update the value for several objects, enter the object_ids as strings inside a list
+            When 'all', it will the update the value for all the objects.
+        """       
+        
+        if (Path(self.folder_db) / 'objects_info.csv').exists():
             
-            db_objects = self.get_db(db='objects')
-            db_objects[new] = ''
-            
-            if old != None:
-                if old in db_objects.columns:
-                    db_objects.drop(old, axis=1, inplace=True)
-                else:
-                    print(f'The column {old} cannot be removed because it does not exist.')
+            db_objects = self.get_objects().set_index('object_id')
 
-            db_objects.to_csv(Path(self.folder_db) / 'DB_objects.csv',index=False)
-            print('DB_projects successfully updated.')
+            if object_id == 'all':
+                object_id = db_objects.index
+            elif isinstance(object_id, str):
+                object_id = [object_id]
+
+               
+            for object in object_id:
+
+                if object not in db_objects.index:
+                    print(f'Error ! The object ID {object} is not registered in the objects_info.csv file.')
+                    return
+                
+                db_objects.loc[object, column] = new_value         
+            
+            
+            db_objects.to_csv(Path(self.folder_db) / 'objects_info.csv',index=True)
+            print('objects_info.csv file successfully updated.')
 
         else:
             print('No databases have been created yet.')
 
 
-    def remove_creators(self):
+    def delete_creators(self):
         """Remove one of several creators from the database file.
         """
 
@@ -2048,7 +2207,7 @@ class DB:
         display(ipw.HBox([deleting, button_delete_output]))  
 
 
-    def remove_devices(self, ID:Optional[str] = None):
+    def delete_devices(self, ID:Optional[str] = None):
         """Remove devices from the database file.
 
         Parameters
@@ -2111,7 +2270,7 @@ class DB:
         display(ipw.HBox([deleting, button_delete_output]))  
 
 
-    def remove_institutions(self, acronym:Optional[str] = None):
+    def delete_institutions(self, acronym:Optional[str] = None):
         """Remove an institution from the database file.
 
         Parameters
@@ -2186,7 +2345,86 @@ class DB:
         display(ipw.HBox([deleting, button_delete_output]))
 
 
-    def remove_materials(self):
+    def delete_lamps(self, id:Optional[str] = None):
+        """Remove a lamp from the database file.
+
+        Parameters
+        ----------
+        id : Optional[str], optional
+            ID number of the lamp, by default None
+        """
+
+        if id == None:
+            id = 'Select an ID'
+
+        df_lamps = self.get_lamps()
+        id_list = list(df_lamps['ID'])
+
+        if id not in  ['Select an ID'] + id_list:
+            print(f'The ID you entered "{id}" has not been registered in the database.')
+            id = 'Select an ID'
+
+        wg_id = ipw.Dropdown(        
+            value=id,
+            options=['Select an ID'] + id_list,
+            description='ID',   
+            layout=Layout(width="15%", height="30px"),
+            style=style,          
+        )
+        
+        wg_description = ipw.Text(
+            value='',
+            description='',
+            disabled=False,
+            layout=Layout(width="70%", height="30px"),
+            style=style,
+        )           
+
+        deleting = ipw.Button(
+            description='Delete lamp',
+            disabled=False,
+            button_style='', # 'success', 'info', 'warning', 'danger' or ''
+            tooltip='Click me',            
+        )        
+            
+        button_delete_output = ipw.Output()
+
+
+        def change_id(change):
+            new_id = change.new
+            description = df_lamps.query(f'ID == "{new_id}"')['description'].values[0]            
+            wg_description.value = description
+        
+
+        def button_delete_pressed(b):
+            """
+            Delete the lamp info in the lamps.txt file.
+            """
+
+            button_delete_output.clear_output(wait=True)
+
+            lamps_folder = self.folder_db
+            lamps_filename = 'lamps.txt'
+
+            df_lamps = self.get_lamps()
+            df_lamps = df_lamps.drop(df_lamps[df_lamps['ID'] == wg_id.value].index)
+
+            df_lamps.to_csv(lamps_folder/lamps_filename, index=False)
+
+            with button_delete_output:
+                print(f'ID {wg_id.value} deleted.')
+
+
+        # Link the widget button to the function
+        deleting.on_click(button_delete_pressed)
+        wg_id.observe(change_id, names='value')
+
+        # Display the widgets
+        display(ipw.HBox([wg_id, wg_description]))
+        display(ipw.HBox([deleting, button_delete_output]))
+    
+    
+    def delete_materials(self):
         """Remove one or several object materials from the database file.
         """
         
@@ -2235,7 +2473,7 @@ class DB:
         display(ipw.HBox([deleting, button_delete_output]))
     
     
-    def remove_methods(self, acronym:Optional[str] = None):
+    def delete_methods(self, acronym:Optional[str] = None):
         """Remove an analytical method from the database file.
 
         Parameters
@@ -2310,7 +2548,7 @@ class DB:
         display(ipw.HBox([deleting, button_delete_output]))
 
     
-    def remove_objects(self, object_id:Optional[str] = None):
+    def delete_objects(self, object_id:Optional[str] = None):
         """Remove a  object from the database file.
 
         Parameters
@@ -2375,7 +2613,7 @@ class DB:
         display(ipw.HBox([deleting, button_delete_output]))
 
     
-    def remove_projects(self, project_id:Optional[str] = None):
+    def delete_projects(self, project_id:Optional[str] = None):
         """Remove a  project from the database file.
 
         Parameters
@@ -2440,7 +2678,7 @@ class DB:
         display(ipw.HBox([deleting, button_delete_output]))
     
     
-    def remove_techniques(self):
+    def delete_techniques(self):
         """Remove one or several object techniques from the database file.
         """
         
@@ -2489,7 +2727,7 @@ class DB:
         display(ipw.HBox([deleting, button_delete_output]))
 
 
-    def remove_types(self):
+    def delete_types(self):
         """Remove one or several object types from the database file.
         """
         
@@ -2538,7 +2776,7 @@ class DB:
         display(ipw.HBox([deleting, button_delete_output]))
        
 
-    def remove_users(self,initials:Optional[str] = None):
+    def delete_users(self,initials:Optional[str] = None):
         """Remove a user from the database file.
 
         Parameters
@@ -2620,7 +2858,7 @@ class DB:
         display(ipw.HBox([deleting, button_delete_output]))
 
 
-    def remove_white_standards(self,id:Optional[str] = None):
+    def delete_white_standards(self,id:Optional[str] = None):
         """Remove a white standard from the database file.
 
         Parameters
