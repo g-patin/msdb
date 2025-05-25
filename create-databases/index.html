@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../manage_db_config/">
+        <link rel="prev" href="../create-DB-class-instance/">
       
       
-        <link rel="next" href="../db_config/">
+        <link rel="next" href="../manage_db_config/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -20,7 +20,7 @@
     
     
       
-        <title>Databases files - msdb</title>
+        <title>Create databases - msdb</title>
       
     
     
@@ -97,7 +97,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Databases files
+              Create databases
             
           </span>
         </div>
@@ -290,17 +290,19 @@
       
   
   
+    
   
   
+  
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
           <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
@@ -314,7 +316,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             How-to-guides
@@ -346,10 +348,17 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../create-databases/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -358,6 +367,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -395,19 +405,17 @@
       
   
   
-    
   
   
-  
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
           <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
@@ -421,7 +429,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             Explanation
@@ -432,17 +440,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../databases-files/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -451,7 +452,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -557,67 +557,21 @@
                   
 
 
-  <h1>Databases files</h1>
+  <h1>Create databases</h1>
 
-<p>In this section, you will learn more about the databases files. The latter consists of txt and csv files in which information related to the analyses of materials can be stored. A short description of each files is provided in Table 1. </p>
-<p>The txt files are more basic and usually consist of a list of information. The two csv files are a bit more complex, they gather many information about the objects and projects and often make use of the information available in the txt files. The latter can be viewed as "ressources" that you keep up-to-date that can be used and combined to describe your objects and projects. </p>
-<p>&nbsp;</p>
-<p>Table 1. Description of the databases files.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;"><div style="width:205px">File names</div></th>
-<th style="text-align: left;"><div style="width:250px">Description</div></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;">devices.txt</td>
-<td style="text-align: left;">Information about the analytical devices</td>
-</tr>
-<tr>
-<td style="text-align: left;">institutions.txt</td>
-<td style="text-align: left;">Information about the institution performing the analyses</td>
-</tr>
-<tr>
-<td style="text-align: left;">lamps.txt</td>
-<td style="text-align: left;">Information about the lamps used to perform the analyses</td>
-</tr>
-<tr>
-<td style="text-align: left;">object_creators.txt</td>
-<td style="text-align: left;">Name and surname of the persons who created the objects analyzed</td>
-</tr>
-<tr>
-<td style="text-align: left;">object_materials.txt</td>
-<td style="text-align: left;">A list of materials that can be found in objects</td>
-</tr>
-<tr>
-<td style="text-align: left;">objects_info.csv</td>
-<td style="text-align: left;">Information about the objects analyzed</td>
-</tr>
-<tr>
-<td style="text-align: left;">object_techniques.txt</td>
-<td style="text-align: left;">A list of techniques used to create the objects</td>
-</tr>
-<tr>
-<td style="text-align: left;">object_types.txt</td>
-<td style="text-align: left;">A list of general object types</td>
-</tr>
-<tr>
-<td style="text-align: left;">projects_info.csv</td>
-<td style="text-align: left;">Information about the projects within which objects are analyzed</td>
-</tr>
-<tr>
-<td style="text-align: left;">users_info.txt</td>
-<td style="text-align: left;">Name, surname, and initials of persons performing the analyses</td>
-</tr>
-<tr>
-<td style="text-align: left;">white_standards.txt</td>
-<td style="text-align: left;">Information about the white standards used for the analyses</td>
-</tr>
-</tbody>
-</table>
-<p>The databases files are stored in a folder on your local computer for which you will need to provide a name when <a href="https://g-patin.github.io/msdb/create-databases/">creating the files</a>. In other words, we assign a name to a path object so that we only need to refer to the name for the program to find the databases files on your computer. </p>
+<p>In this section, you will learn how to create the databases files on your local computer. Use the following code for creating the databases. </p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">msdb</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">msdb</span><span class="o">.</span><span class="n">DB</span><span class="p">(</span><span class="n">new_db</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+<p>It will display some ipywdigets inside which you can enter the info (db name and folder path) required to create the databases files (see figure below).</p>
+<figure>
+<p><img align="left" alt="Alt text" class="img-Large" src="../images/create_db.png" /></p>
+<figcaption>
+<p>Ipywidgets to be filled when creating the databases files</p>
+</figcaption>
+</figure>
+<p>Once you have filled the ipywidgets with valid info, clicking on the button 'Create databases' will lead to the creation of the <a href="https://g-patin.github.io/msdb/databases-files/">databases files</a> in the registered folder. Additionally, it will register the database in the <a href="https://g-patin.github.io/msdb/db_config/"><em>db_config.json</em></a> file. </p>
 
 
 
