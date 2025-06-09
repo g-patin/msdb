@@ -79,6 +79,213 @@ def add_db_name():
     display(ipw.HBox([recording, button_record_output]))
 
 
+def create_db(name_db:Optional[str] = None, path_folder:Optional[str] = None, widgets:Optional[bool] = True):
+    """Create and register new databases
+
+    Parameters
+    ----------
+    name_db : Optional[str], optional
+        Name of the database that will later be used to refer to the database files, by default None
+    
+    path_folder : Optional[str], optional
+        Absolute path of the folder where the database files should be created, by default None
+    
+    widgets : Optional[bool], optional
+        Whether to display widgets to create the database, by default True
+        When False, you will have to pass in arguments for the name_db and path_folder
+    """
+
+    # Define the python widgets
+
+    wg_name_db = ipw.Text(
+        description='Database Name',
+        placeholder='Enter a name (without space)',
+        value=name_db,
+        layout=Layout(width="50%", height="30px"),
+        style=style
+    )
+
+    wg_path_folder = ipw.Text(
+        description='Folder location',
+        value=path_folder,
+        layout=Layout(width="50%", height="30px"),
+        style=style
+    )
+
+    recording = ipw.Button(
+        description='Create databases',
+        disabled=False,
+        button_style='', # 'success', 'info', 'warning', 'danger' or ''
+        tooltip='Click me',            
+    )        
+            
+    button_record_output = ipw.Output()
+
+    # Define function to register the database in the config file
+    def register_db(name_db, path_folder):
+        
+        with open(config_file, "r") as f:
+            config = json.load(f)
+
+        # Existing databases
+        databases = config["databases"]
+
+        # Update config with user data
+        databases[name_db] = {'path_folder':path_folder}
+        config['databases'] = databases            
+
+        # Save the updated config back to the JSON file
+        with open(config_file, "w") as f:
+            json.dump(config, f, indent=4)
+    
+    # Define function to create the database files
+    def create_db_files(path_folder):
+
+        # Convert the path_folder to a Path object
+        path_folder = Path(path_folder)
+
+        # Create the project info file
+        db_project = pd.DataFrame(columns=['project_id','institution','start_date','end_date','project_leader','co-researchers','keywords', 'methods'])            
+        db_project.to_csv(path_folder / 'projects_info.csv', index=False)
+
+        # Create the object info file
+        db_object = pd.DataFrame(columns=['object_id','object_category','object_type','object_technique','object_title','object_name','object_creator','object_date','object_owner','object_material','support','colorants_name','binding','ratio','thickness_um','color','status','project_id', 'object_comment'])
+        db_object.to_csv(path_folder / 'objects_info.csv', index=False)
+
+        # Create several text files
+        with open(path_folder / 'analytical_methods.txt', 'w') as f:                
+            f.write("Macro-XRF\n")
+            f.write("Raman\n")
+            f.write("XRD\n")
+            f.write("XRF\n")
+                        
+        with open(path_folder / 'devices.txt', 'w') as f:
+            f.write('Id,name,description,process_function\n')
+                
+        with open(path_folder / 'white_standards.txt', 'w') as f:
+            f.write('ID,description\n')            
+
+        with open(path_folder / 'object_creators.txt', 'w') as f:
+            f.write('surname,name')
+
+        with open(path_folder / 'object_techniques.txt', 'w') as f:
+            f.write("China ink\n")
+            f.write("acrylinc\n")
+            f.write("aquatinte\n")
+            f.write("black ink\n")
+            f.write("black pencil\n")
+            f.write("chalk\n")
+            f.write("charcoal\n")
+            f.write("monotypie\n")
+            f.write("dye\n")
+            f.write("felt-tip ink\n")
+            f.write("frescoe\n")
+            f.write("gouache\n")
+            f.write("ink\n")
+            f.write("linoleum print\n")
+            f.write("lithograh\n")
+            f.write("mezzotinte\n")
+            f.write("oil paint\n")
+            f.write("pastel\n")
+            f.write("tin-glazed\n")
+            f.write("watercolor\n")
+            f.write("wood block print\n")        
+
+        with open(path_folder / 'object_types.txt', 'w') as f:            
+            f.write("banknote\n")
+            f.write("book\n")
+            f.write("BWS\n")       
+            f.write("ceramic\n")
+            f.write("colorchart\n")
+            f.write("drawing\n")
+            f.write("notebook\n")
+            f.write("paint-out\n")
+            f.write("painting\n")
+            f.write("photograph\n")
+            f.write("print\n")
+            f.write("sculpture\n")
+            f.write("seals\n")
+            f.write("spectralon\n")
+            f.write("tapistry\n")
+            f.write("textile\n")
+            f.write("wallpainting\n")
+
+        with open(path_folder / 'object_materials.txt', 'w') as f:
+            f.write("blue paper\n")
+            f.write("canvas\n")
+            f.write("cardboard\n")
+            f.write("ceramic\n")
+            f.write("coloured paper\n")
+            f.write("cotton\n")
+            f.write("Japanese paper\n")
+            f.write("none\n")
+            f.write("opacity chart\n")
+            f.write("paper\n")
+            f.write("parchment\n")
+            f.write("rag paper\n")
+            f.write("stone\n")
+            f.write("transparent paper\n")
+            f.write("wax\n")
+            f.write("wood\n")
+            f.write("woodpulp paper\n")
+            f.write("wool\n")            
+
+        with open(path_folder / 'institutions.txt', 'w') as f:
+            f.write('name,acronym')
+
+        with open(path_folder / 'users_info.txt', 'w') as f:
+            f.write('name,surname,initials')
+
+    if widgets:
+        # Define the function when pressing the button
+        def button_record_pressed(b):
+            """
+            Create the databases.
+            """
+
+            button_record_output.clear_output(wait=True)           
+            
+            # Run the functions previously defined
+            register_db(name_db=wg_name_db.value, path_folder=wg_path_folder.value)
+            create_db_files(path_folder=wg_path_folder.value)    
+                    
+            # Print output messages
+            with button_record_output:
+                print(f'The database {wg_name_db.value} was created and recorded in the db_config.json file.')
+                print(f'The database files have been created in the following folder: {wg_path_folder.value}')
+
+            
+        recording.on_click(button_record_pressed)
+
+        display(ipw.VBox([wg_name_db,wg_path_folder]))
+        display(ipw.HBox([recording, button_record_output]))
+
+    else:
+
+        # Stop the script if name_db is missing
+        if name_db == None:
+            print('Please enter a valid name_db value.')
+            return
+        
+        # Stop the script if path_folder is missing
+        if path_folder == None:
+            print('Please enter a valid path_folder value.')
+            return
+        
+        # Stop the script if the path_folder value is not valid
+        if not Path(path_folder).exists():
+            print('The path_folder that you entered is not valid. Make sure that the folder where you want to save your databases has been created.')
+            return
+
+        # Run the functions previously defined
+        register_db(name_db=name_db, path_folder=path_folder)
+        create_db_files(path_folder=path_folder) 
+
+        # Print output messages
+        print(f'The database {name_db} was created and recorded in the db_config.json file.')
+        print(f'The database files have been created in the following folder: {path_folder}')
+
+
 def get_config_file():
     """Retrieve the content of the db_config.json file."""
     
@@ -260,7 +467,7 @@ def update_db_folder(db_name:Optional[str] = None, path_folder:Optional[str] = N
 
 class DB:
 
-    def __init__(self, name_db:Optional[str] = None, new_db:Optional[bool] = False, config_file:Optional[str] = Path(__file__).parent / 'db_config.json') -> None:
+    def __init__(self, name_db:Optional[str] = None, config_file:Optional[str] = Path(__file__).parent / 'db_config.json') -> None:
         """Instantiate a DB class object.
 
         Parameters
@@ -269,49 +476,35 @@ class DB:
         name_db : Optional[str]
             Name of the databases, by default None
             When None, it retrieves the first databases info registered in the db_config.json file
-
-        new_db : Optional[bool]
-            Whether to create a new database ecosystem, by default False
-
+        
         config_file : Optional[str|Path]
             Location of the configuration file, by default Path(__file__).parent/'db_config.json'
                 
         """
-        self.name_db = name_db        
-        self.new_db = new_db
+        self.name_db = name_db       
         self.config_file = config_file
 
         # Check whether the db_config.json file exists
-        self._init_config()
-
-        # Create a new databases if required
-        if self.new_db:
-
-            existing_dbs = list(self.get_db_config().keys())
-
-            if self.name_db not in existing_dbs:
-                self.create_db(name_db=self.name_db)
-                return
-            else:
-                print(f'The database name you entered ({self.name_db}) has already been created. Either set the "new_db" parameter to False or choose a different name_db.')
+        self._init_config()                  
 
         # Check whether databases were created
         if len(get_config_file()['databases']) == 0:
             print('There are no databases registered. Create a database to start using the functions available through the DB class.')
             return None
         
-        # Select the first database name if name_db is None
+        # Check whether the name_db value is valid or select the first registered database name
+        existing_dbs = get_db_names()
+        
         if name_db == None:
-            self.name_db = list(get_config_file()['databases'].keys())[0]
+            self.name_db = get_db_names()[0]    # Select the first registered database name    
+            
+        elif self.name_db not in existing_dbs:
+            print(f'The name_db value you entered ({self.name_db}) has not been registered. Please select a registered database name.')
+            return
+        
+        self.folder_db = Path(get_config_file()['databases'][self.name_db]['path_folder'])
 
-        else:
-            if not self.name_db in list(get_config_file()['databases'].keys()):
-                print(f'The name_db value you entered ({self.name_db}) has not been registered. Either set the "new_db" parameter to True or select a registered database name.')
-
-            else:
-                self.folder_db = Path(get_config_file()['databases'][self.name_db]['path_folder'])
-              
-
+    
     def _init_config(self):
         """Check whether the db_config.json exists.
         """
@@ -802,11 +995,11 @@ class DB:
         types_file = open(self.folder_db / r'object_types.txt', 'r').read()
         types = types_file.split("\n")        
 
-        techniques_file = open(self.folder_db / r'object_techniques.txt', 'r').read()
-        techniques = techniques_file.split("\n")        
+        techniques_file = open(self.folder_db / r'object_techniques.txt', 'r').read().strip()
+        techniques = sorted(techniques_file.split("\n"), key=str.lower)        
 
         materials_file = open(self.folder_db  / r'object_materials.txt', 'r').read()
-        materials = materials_file.split("\n")        
+        materials = sorted(materials_file.split("\n"), key=str.lower)        
 
         owners_file = pd.read_csv(self.folder_db / 'institutions.txt')
         owners = tuple(owners_file['name'].values)
@@ -893,31 +1086,49 @@ class DB:
 
         object_type = ipw.Combobox(
             placeholder = 'General classification',
-            options = types,
-            description = 'Type',
+            options=types,
+            description='Type',
             ensure_option=False,
             disabled=False,
             layout=Layout(width="99%", height="30px"),
             style=style,
         )
 
-        object_technique = ipw.SelectMultiple(            
+        object_techniques = ipw.Combobox(  
+            placeholder='Choose a technique',          
             options = techniques,
-            description = 'Technique',
-            ensure_option=False,
-            rows=10,
-            disabled=False,
-            layout=Layout(width="99%", height="180px"),
+            description = '',
+            ensure_option=False,       
+            layout=Layout(width="65%", height="180px"),
             style=style,
-        )   
+        )  
 
-        object_material = ipw.SelectMultiple(            
-            options = materials,
-            description = 'Materials',
+        object_techniques_selected = ipw.SelectMultiple(            
+            options=[], 
+            description='Techniques',           
             ensure_option=False,
-            rows=10,
+            rows=6,
             disabled=False,
-            layout=Layout(width="99%", height="180px"),
+            layout=Layout(width="99%", height="140px"),
+            style=style,
+        ) 
+
+        object_materials = ipw.Combobox(
+            placeholder='Choose a material',
+            options=materials,
+            description='',
+            ensure_option=True,
+            layout=Layout(width="65%", height="180px"),
+            style=style,
+        )
+        
+        object_materials_selected = ipw.SelectMultiple(            
+            options=[], 
+            description='Materials',           
+            ensure_option=False,
+            rows=6,
+            disabled=False,
+            layout=Layout(width="99%", height="140px"),
             style=style,
         )
 
@@ -930,17 +1141,31 @@ class DB:
         )        
         
 
-        button_record_output = ipw.Output()       
-    
+        button_record_output = ipw.Output()    
 
-        object_color = ipw.Combobox(
-            description = 'Color',
-            placeholder = 'Optional',
-            ensure_option=False,
+        # Create a button to remove selected techniques
+        remove_technique_button = ipw.Button(
+            description='Remove selected',
             disabled=False,
-            layout=Layout(width="78%", height="30px"),
+            button_style='', # 'success', 'info', 'warning', 'danger' or ''
+            tooltip='Click me to remove the selected techniques',
+            icon='check',
+            layout=Layout(width="35%", height="30px"),
             style=style,
-        )        
+        )   
+
+        # Create a button to remove selected materials
+        remove_material_button = ipw.Button(
+            description='Remove selected',
+            disabled=False,
+            button_style='', # 'success', 'info', 'warning', 'danger' or ''
+            tooltip='Click me to remove the selected materials',
+            icon='check',
+            layout=Layout(width="35%", height="30x"),
+            style=style,
+        ) 
+    
+               
                 
         # Combobox for additional parameters (if any)
         additional_params = [col for col in existing_columns if col not in [
@@ -963,8 +1188,44 @@ class DB:
                 options=[],  # You can populate this with options if needed
                 placeholder=f"Enter {param} value",
                 style=style
-            )        
+            )  
 
+        # Function to add selected material to the SelectMultiple
+        def object_materials_change(change):
+            if change['type'] == 'change' and change['name'] == 'value':
+                selected_material = change['new']
+                if selected_material and selected_material not in object_materials_selected.value:
+                    object_materials_selected.options = list(object_materials_selected.options) + [selected_material]  
+
+        # Function to add selected technique to the SelectMultiple
+        def object_techniques_change(change):
+            if change['type'] == 'change' and change['name'] == 'value':
+                selected_technique = change['new']
+                if selected_technique and selected_technique not in object_techniques_selected.value:
+                    object_techniques_selected.options = list(object_techniques_selected.options) + [selected_technique]     
+
+        # Function to remove selected techniques
+        def on_remove_technique_button_click(b):
+            # Get the indices of the selected options
+            selected_indices = object_techniques_selected.index
+            # Remove the selected options from the SelectMultiple
+            object_techniques_selected.options = [option for i, option in enumerate(object_techniques_selected.options) if i not in selected_indices]
+
+        # Function to remove selected materials
+        def on_remove_material_button_click(b):
+            # Get the indices of the selected options
+            selected_indices = object_materials_selected.index
+            # Remove the selected options from the SelectMultiple
+            object_materials_selected.options = [option for i, option in enumerate(object_materials_selected.options) if i not in selected_indices]
+        
+        
+        # Observe changes in the Combobox widgets
+        object_materials.observe(object_materials_change)
+        object_techniques.observe(object_techniques_change)
+
+        # Set the button click event handler
+        remove_technique_button.on_click(on_remove_technique_button_click)
+        remove_material_button.on_click(on_remove_material_button_click)
 
         def button_record_pressed(b):
             """
@@ -991,13 +1252,13 @@ class DB:
                     'object_id' : object_id.value,                   
                     'object_category': object_category.value, 
                     'object_type': object_type.value, 
-                    "object_technique": "_".join(object_technique.value),
+                    "object_technique": "_".join(object_techniques_selected.options),
                     "object_title": object_title.value,
                     'object_name': object_name.value,
                     'object_creator': object_creator.value,                        
                     'object_date': object_date.value,
                     'object_owner': object_owner.value,
-                    'object_material': "_".join(object_material.value)},                       
+                    'object_material': "_".join(object_materials_selected.options)},                       
                     index=[0] 
                     ) 
 
@@ -1037,8 +1298,8 @@ class DB:
         display(
             ipw.HBox([
                 ipw.VBox([object_id,project_id,object_creator,object_date,object_owner,object_category,object_type,object_title, object_name], layout=Layout(width="30%", height="370px"), style=style,),
-                ipw.VBox([object_technique,object_material], layout=Layout(width="30%", height="370px"), style=style),
-                ipw.VBox([object_color, *[widget for widget in additional_param_widgets.values()]], layout=Layout(width="30%", height="370px"), style=style)
+                ipw.VBox([ipw.HBox([object_techniques,remove_technique_button]),object_techniques_selected,ipw.HBox([object_materials,remove_material_button]),object_materials_selected], layout=Layout(width="30%", height="370px"), style=style),
+                ipw.VBox([*[widget for widget in additional_param_widgets.values()]], layout=Layout(width="30%", height="370px"), style=style)
                 ]))
                 
         display(ipw.HBox([recording, button_record_output]))
@@ -1571,166 +1832,7 @@ class DB:
         display(wg_ID,wg_description)
         display(ipw.HBox([recording, button_record_output]))
     
-    
-    def create_db(self, name_db:Optional[bool] = None , path_folder:Optional[str] = None):   
-
-
-        # Define the python widgets
-
-        wg_name_db = ipw.Text(
-            description='Database Name',
-            placeholder='Enter a name (without space)',
-            value=name_db,
-            layout=Layout(width="50%", height="30px"),
-            style=style
-        )
-
-        wg_path_folder = ipw.Text(
-            description='Folder location',
-            value=path_folder,
-            layout=Layout(width="50%", height="30px"),
-            style=style
-        )
-
-        recording = ipw.Button(
-            description='Create databases',
-            disabled=False,
-            button_style='', # 'success', 'info', 'warning', 'danger' or ''
-            tooltip='Click me',            
-        )        
-            
-        button_record_output = ipw.Output()
-        
-
-        # Define the function when pressing the button
-        
-        def button_record_pressed(b):
-            """
-            Create the databases.
-            """
-
-            button_record_output.clear_output(wait=True)
-
-            with open(self.config_file, "r") as f:
-                config = json.load(f)
-
-            # Existing databases
-            databases = config["databases"]
-
-            # Update config with user data
-            databases[wg_name_db.value] = {'path_folder':wg_path_folder.value}
-            config['databases'] = databases            
-
-            # Save the updated config back to the JSON file
-            with open(self.config_file, "w") as f:
-                json.dump(config, f, indent=4)
-            
-            # Create the project database
-            db_project = pd.DataFrame(columns=['project_id','institution','start_date','end_date','project_leader','co-researchers','keywords', 'methods'])            
-            db_project.to_csv(Path(wg_path_folder.value) / 'projects_info.csv', index=False)
-
-
-            # Create the object database
-            db_object = pd.DataFrame(columns=['object_id','object_category','object_type','object_technique','object_title','object_name','object_creator','object_date','object_owner','object_material','colorants','colorants_name','binding','ratio','thickness_um','color','status','project_id'])
-            db_object.to_csv(Path(wg_path_folder.value) / 'objects_info.csv', index=False)
-
-            
-            # Create several text files
-            with open(Path(wg_path_folder.value) / 'analytical_methods.txt', 'w') as f:                
-                f.write("Macro-XRF\n")
-                f.write("Raman\n")
-                f.write("XRD\n")
-                f.write("XRF\n")
-                        
-            with open(Path(wg_path_folder.value) / 'devices.txt', 'w') as f:
-                f.write('Id,name,description,process_function\n')
-                
-            with open(Path(wg_path_folder.value) / 'white_standards.txt', 'w') as f:
-                f.write('ID,description\n')            
-
-            with open(Path(wg_path_folder.value) / 'object_creators.txt', 'w') as f:
-                f.write('surname,name')
-
-            with open(Path(wg_path_folder.value) / 'object_techniques.txt', 'w') as f:
-                f.write("China ink\n")
-                f.write("acrylinc\n")
-                f.write("aquatinte\n")
-                f.write("black ink\n")
-                f.write("black pencil\n")
-                f.write("chalk\n")
-                f.write("charcoal\n")
-                f.write("monotypie\n")
-                f.write("dye\n")
-                f.write("felt-tip ink\n")
-                f.write("frescoe\n")
-                f.write("gouache\n")
-                f.write("ink\n")
-                f.write("linoleum print\n")
-                f.write("lithograh\n")
-                f.write("mezzotinte\n")
-                f.write("oil paint\n")
-                f.write("pastel\n")
-                f.write("tin-glazed\n")
-                f.write("watercolor\n")
-                f.write("wood block print\n")        
-
-            with open(Path(wg_path_folder.value) / 'object_types.txt', 'w') as f:            
-                f.write("banknote\n")
-                f.write("book\n")
-                f.write("BWS\n")       
-                f.write("ceramic\n")
-                f.write("colorchart\n")
-                f.write("drawing\n")
-                f.write("notebook\n")
-                f.write("paint-out\n")
-                f.write("painting\n")
-                f.write("photograph\n")
-                f.write("print\n")
-                f.write("sculpture\n")
-                f.write("seals\n")
-                f.write("spectralon\n")
-                f.write("tapistry\n")
-                f.write("textile\n")
-                f.write("wallpainting\n")
-            with open(Path(wg_path_folder.value) / 'object_materials.txt', 'w') as f:
-                f.write("blue paper\n")
-                f.write("canvas\n")
-                f.write("cardboard\n")
-                f.write("ceramic\n")
-                f.write("coloured paper\n")
-                f.write("cotton\n")
-                f.write("Japanese paper\n")
-                f.write("none\n")
-                f.write("opacity chart\n")
-                f.write("paper\n")
-                f.write("parchment\n")
-                f.write("rag paper\n")
-                f.write("stone\n")
-                f.write("transparent paper\n")
-                f.write("wax\n")
-                f.write("wood\n")
-                f.write("woodpulp paper\n")
-                f.write("wool\n")            
-
-            with open(Path(wg_path_folder.value) / 'institutions.txt', 'w') as f:
-                f.write('name,acronym')
-
-            with open(Path(wg_path_folder.value) / 'users_info.txt', 'w') as f:
-                f.write('name,surname,initials')          
-
-            
-            # Print output message
-            with button_record_output:
-                print(f'The database {wg_name_db.value} was created and recorded in the db_config.json file.')
-                print(f'The database files have been created in the following folder: {wg_path_folder.value}')
-
-        
-        recording.on_click(button_record_pressed)
-
-        display(ipw.VBox([wg_name_db,wg_path_folder]))
-        display(ipw.HBox([recording, button_record_output]))
-                 
-    
+           
     def get_creators(self):
         if (Path(self.folder_db) / 'object_creators.txt').exists():
             df_creators = pd.read_csv(Path(self.folder_db) / 'object_creators.txt')
@@ -1798,7 +1900,7 @@ class DB:
         
         else:            
             materials_df = pd.read_csv(self.folder_db / materials_filename, header=None)
-            materials = list(materials_df.values.flatten())              
+            materials = sorted(list(materials_df.values.flatten()), key=str.lower)              
             return materials
 
     
@@ -2041,7 +2143,7 @@ class DB:
         
         else:            
             techniques_df = pd.read_csv(self.folder_db / 'object_techniques.txt', header=None)
-            techniques = list(techniques_df.values.flatten())              
+            techniques = sorted(list(techniques_df.values.flatten()), key=str.lower)             
             return techniques
         
 
@@ -2057,7 +2159,7 @@ class DB:
         
         else:            
             types_df = pd.read_csv(self.folder_db / 'object_types.txt', header=None)
-            types = list(types_df.values.flatten())              
+            types = sorted(list(types_df.values.flatten()), key=str.lower)              
             return types
 
     
@@ -2560,7 +2662,7 @@ class DB:
         if object_id == None:
             object_id = 'Select an object ID'
 
-        object_ids = sorted(list(self.get_objects()['object_id']))
+        object_ids = sorted(list(self.get_objects()['object_id']), key=str.lower)
 
         if object_id not in  ['Select an object ID'] + object_ids:
             print(f'The object ID you entered "{object_id}" has not been registered in the database.')
