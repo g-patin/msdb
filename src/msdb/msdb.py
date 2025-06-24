@@ -980,7 +980,7 @@ class DB:
         display(ipw.HBox([recording, button_record_output])) 
     
     
-    def add_objects(self):
+    def add_objects(self, project_id:Optional[str] = ''):
         """Add a new object in the objects_info.csv file"""
 
         db_projects = self.get_projects()
@@ -1008,7 +1008,7 @@ class DB:
         # Define ipython widgets
 
         project_id = ipw.Combobox(
-            #value = ' ',
+            value = project_id,
             placeholder='Project',
             options = projects_list,
             description = 'Project id',
