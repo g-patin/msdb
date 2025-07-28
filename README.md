@@ -1,14 +1,12 @@
 # msdb
-Material Science Database
+Material Science Database: an open source and FAIR database framework for the analyses of materials.
 
 Main features
 -------------
 
-- **Visualisation of microfading data**.
+- **Creation of database files (txt and csv) to store information related to analytical measurements**.
 
-- **Queries on data and metadata**.
-
-- **Mathematical operations on microfading data**: average, extrapolation, delta values, interpolation.
+- **Provide CRUD methods (Create, Read, Update, Delete) on the database files**.
 
 
 Installation or upgrade
