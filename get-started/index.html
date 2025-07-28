@@ -682,7 +682,7 @@
 <div class="highlight"><pre><span></span><code><span class="c1"># execute this line to display the ipywidgets showed below.</span>
 <span class="c1"># fill in the database name and folder location</span>
 <span class="c1"># click on the &quot;Create databases&quot; button</span>
-<span class="n">msdb</span><span class="o">.</span><span class="n">DB</span><span class="p">(</span><span class="n">new_db</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">msdb</span><span class="o">.</span><span class="n">create_db</span><span class="p">()</span>
 </code></pre></div>
 <p>&nbsp;</p>
 <figure>
@@ -703,8 +703,8 @@
 &nbsp;</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">msdb</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="n">db</span> <span class="o">=</span> <span class="n">msdb</span><span class="o">.</span><span class="n">DB</span><span class="p">(</span><span class="n">db_name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
-<span class="c1"># where &#39;test&#39; is the name of a database that I previously created</span>
+<div class="highlight"><pre><span></span><code><span class="n">db</span> <span class="o">=</span> <span class="n">msdb</span><span class="o">.</span><span class="n">DB</span><span class="p">(</span><span class="n">db_name</span><span class="o">=</span><span class="s1">&#39;test_db&#39;</span><span class="p">)</span>
+<span class="c1"># where &#39;test_db&#39; is the name of a database that I previously created</span>
 </code></pre></div>
 <p>&nbsp;</p>
 <h2 id="3-four-keywords-function-add-get-update-delete">3. <strong>Four keywords function: add, get, update, delete</strong><a class="headerlink" href="#3-four-keywords-function-add-get-update-delete" title="Permanent link">&para;</a></h2>
