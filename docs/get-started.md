@@ -15,7 +15,7 @@ import msdb
 # execute this line to display the ipywidgets showed below.
 # fill in the database name and folder location
 # click on the "Create databases" button
-msdb.DB(new_db=True)
+msdb.create_db()
 ```
 
 &nbsp;
@@ -44,8 +44,8 @@ import msdb
 ```
 
 ```python
-db = msdb.DB(db_name='test')
-# where 'test' is the name of a database that I previously created
+db = msdb.DB(db_name='test_db')
+# where 'test_db' is the name of a database that I previously created
 ```
 
 &nbsp;

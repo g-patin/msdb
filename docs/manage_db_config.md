@@ -38,7 +38,7 @@ There are two possibilities to add content to the *db_config* file:
 
 1. You can either create a new database along with the txt and csv files. This will automatically register the database in the *db_config* file (see [create databases](https://g-patin.github.io/msdb/create-databases/)).
 
-2. The databases files have already been created on your local computer and you simply want to register the database inside in the *db_config* file. In that case, you can use the `add_db_name()` function, as illustrated below.
+2. The databases files have already been created on your local computer and you simply want to register the database inside in the *db_config* file. In that case, you can use the `register_db_name()` function, as illustrated below.
 
 ```python
 import msdb
@@ -47,7 +47,7 @@ import msdb
 ```python
 # This command will display two ipywidgets inside which you will be able
 # to register the database name and folder location.
-msdb.add_db_name()
+msdb.register_db_name()
 ```
 
 

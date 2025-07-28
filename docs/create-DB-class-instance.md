@@ -14,11 +14,11 @@ import msdb
 ```
 
 ```python
-# When running this command, an ipywdidget will appear (see figure below) inside which you will be able to pass in information
-msdb.DB(new_db=True)
+# When running this command, ipywidget objects will appear (see figure below)
+# inside which you will be able to pass in information
+msdb.create_db()
 ```
-	
-&nbsp;
+
 
 ![Alt text](images/create_db.png){: .img-Large align=left }
 /// caption

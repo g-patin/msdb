@@ -91,7 +91,16 @@ add_users() function.
 
 ## 3. **Update info**
 
-For the time being, one can only update the content of the two csv files (objects_info.csv and projects_info.csv), using the functions `update_objects()` and `update_projects()` respectively. These two functions works similarly and the way to use them is described below.
+For the time being, one can only update the content of the two csv files (objects_info.csv and projects_info.csv), using the functions `update_objects()` and `update_projects()` respectively. These two functions works similarly and the way to use them is described below. There are two ways you can use these functions : with or with ipywidgets. Simply, set the parameters "widgets" fo each function to True or False to use one or the other way. 
+
+**Method with ipywidgets**
+
+![Alt text](images/db_update_object.png){: .img-Large align=left }
+/// caption
+update_objects() function using ipywidgets.
+/// 
+
+**Method without ipywidgets**
 
 ```python
 # For two projects ('2023-011' and '2023-555'), I assigned

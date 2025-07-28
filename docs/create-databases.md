@@ -6,7 +6,7 @@ import msdb
 ```
 
 ```python
-msdb.DB(new_db=True)
+msdb.create_db()
 ```
 
 It will display some ipywdigets inside which you can enter the info (db name and folder path) required to create the databases files (see figure below).

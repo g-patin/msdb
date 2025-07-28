@@ -19,7 +19,7 @@ Email: microfading@mailo.com
 
 ## What is this package about ?
 
-This package has been designed for users that perform scientific analyses on materials. It aims to provide a generic working environment that can be used to store information about the objects, the materials, the analytical methods, the users, etc. The idea is to have a central location - a folder on your computer - with several txt and csv files for which users will be able to perform basic data management operations : create, read, update, delete (CRUD).   
+This package has been designed for users that perform scientific analyses on materials. It aims to provide a generic working environment that can be used to store information about the objects, the materials, the analytical methods, the users, etc. The idea is to have a central location - a folder on your computer - that contains several databases files (.txt and .csv files) from which information can be easily retrieved and connected to analytical data. This package aims to support the creation and management of such database environment.   
 
 
 ## What does this package provide ?
@@ -41,7 +41,7 @@ The package provides two main resources:
 
 If you are using this package for a publication, please cite the package as follows: 
 
-- Patin, G., 2025, *material science database*, Python Package, v.0.0.5, [https://github.com/g-patin/msdb](https://github.com/g-patin/msdb)
+- Patin, G., 2025, *material science database*, Python Package, v.0.0.7, [https://github.com/g-patin/msdb](https://github.com/g-patin/msdb)
 
  
 
