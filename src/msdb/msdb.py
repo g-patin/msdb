@@ -12,14 +12,14 @@ style = {"description_width": "initial"}
 config_file = Path(__file__).parent / 'db_config.json'
 
 
-def add_db_name():
+def add_db_name(db_name:Optional[str] = None, db_path:Optional[str] = None, widgets:Optional[bool] = True):
     """Add the name and the folder location of databases in the db_config.json file. Use this function when you already have the databases files on your computer but not registered inside the msdb package.
     """
 
     wg_path_folder = ipw.Text(
         description = 'Path folder',
         placeholder = 'Location of the databases folder on your computer',
-        value = '',
+        value = db_path,
         style = style, 
         layout=Layout(width="50%", height="30px"),
     )
@@ -27,7 +27,7 @@ def add_db_name():
     wg_name_db = ipw.Text(
         description = 'DB name',
         placeholder = "Enter a db name",
-        value = '',        
+        value = db_name,        
         style = style,
         layout=Layout(width="20%", height="30px"),
     )        
@@ -42,19 +42,13 @@ def add_db_name():
     button_record_output = ipw.Output()
 
 
-    def button_record_pressed(b):
-        """
-        Save the databases info in the db_config.json file.
-        """
-
-        button_record_output.clear_output(wait=True)
-
+    def add_new_db(name,path):
         # check whether the path folder is valid
-        if not Path(wg_path_folder.value).exists():
+        if not Path(path).exists():
             with button_record_output:
-                print(f'The path you entered {wg_path_folder.value} is not valid.')
-            return      
-
+                print(f'The path you entered {path} is not valid. Process aborted !')
+            return 'invalid path'
+        
         # Retrieve the config info
         config = get_config_file()
 
@@ -62,21 +56,37 @@ def add_db_name():
         databases = config["databases"]
 
         # Update config with user data
-        databases[wg_name_db.value] = {'path_folder':wg_path_folder.value}
-        config['databases'] = databases            
+        databases[name] = {'path_folder': path}
+        config['databases'] = databases
 
         # Save the updated config back to the JSON file
         with open(config_file, "w") as f:
             json.dump(config, f, indent=4)
-                
-        with button_record_output:
-            print(f'Database info ({wg_name_db.value}) recorded in the db_config.json file.')
+    
+    
+    def button_record_pressed(b):
+        """
+        Save the databases info in the db_config.json file.
+        """
 
+        button_record_output.clear_output(wait=True)
 
-    recording.on_click(button_record_pressed)
+        function = add_new_db(wg_name_db.value, wg_path_folder.value)
 
-    display(ipw.VBox([wg_name_db, wg_path_folder]))
-    display(ipw.HBox([recording, button_record_output]))
+        if function != "invalid path":
+            with button_record_output:
+                print(f'Database info ({wg_name_db.value}) recorded in the db_config.json file.')
+         
+
+    if widgets:
+        recording.on_click(button_record_pressed)
+
+        display(ipw.VBox([wg_name_db, wg_path_folder]))
+        display(ipw.HBox([recording, button_record_output]))
+
+    else:
+        return add_new_db(name=db_name, path=db_path)
+
 
 
 def create_db(name_db:Optional[str] = None, path_folder:Optional[str] = None, widgets:Optional[bool] = True):
@@ -287,7 +297,8 @@ def create_db(name_db:Optional[str] = None, path_folder:Optional[str] = None, wi
 
 
 def get_config_file():
-    """Retrieve the content of the db_config.json file."""
+    """Retrieve the content of the db_config.json file, which contains information related to the databases that you created. The name and the folder path of each registered databases is stored in this json file.    
+    """
     
     with open(config_file, 'r') as file:
             config = json.load(file)
