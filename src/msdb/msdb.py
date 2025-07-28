@@ -1,3 +1,9 @@
+# coding: utf-8
+# Author: Gauthier Patin
+# Licence: GNU GPL v3.0
+
+####### IMPORT STATEMENTS #######
+
 import pandas as pd
 from pathlib import Path
 from typing import Optional, Union
@@ -8,12 +14,36 @@ import ipywidgets as ipw
 from IPython.display import display, clear_output
 import re
 
+
+####### GENERAL VARIABLES #######
+
 style = {"description_width": "initial"}
 config_file = Path(__file__).parent / 'db_config.json'
 
 
-def add_db_name(db_name:Optional[str] = None, db_path:Optional[str] = None, widgets:Optional[bool] = True):
-    """Add the name and the folder location of databases in the db_config.json file. Use this function when you already have the databases files on your computer but not registered inside the msdb package.
+####### MSDB PACKAGE FUNCTIONS #######
+
+def register_db_name(db_name:Optional[str] = None, db_path:Optional[str] = None, widgets:Optional[bool] = True):
+    """Register the name and the folder location of databases in the db_config.json file. Use this function when you already have the database files on your computer but not registered inside the msdb package.
+
+    Parameters
+    ----------
+
+    db_name : Optional[str], optional
+        Name of the database that you wish to register, by default None
+
+    db_path : Optional[str], optional
+        The path of folder where the where the databases files are located, by default None
+
+    widgets : Optional[bool], optional
+        Whether to display widgets to register the database, by default True
+        When False, you will have to pass in arguments for the db_name and db_path
+
+    
+    Returns
+    -------
+    ipywdigets or string
+    If the parameter "widgets" is set to True, it will return several ipywidgets from which you you will be able to register the database. When "widgets" is set to False, it will automatically register the database and will return a string.
     """
 
     wg_path_folder = ipw.Text(
@@ -88,13 +118,14 @@ def add_db_name(db_name:Optional[str] = None, db_path:Optional[str] = None, widg
         return add_new_db(name=db_name, path=db_path)
 
 
+def create_db(db_name:Optional[str] = None, path_folder:Optional[str] = None, widgets:Optional[bool] = True):
+    """Create and register new databases. This function creates the database files inside the designated path_folder and it also registers the name of the database inside the db_config.json file.
 
-def create_db(name_db:Optional[str] = None, path_folder:Optional[str] = None, widgets:Optional[bool] = True):
-    """Create and register new databases
+    If you only want to register the database, use the `register_db_name` function.
 
     Parameters
     ----------
-    name_db : Optional[str], optional
+    db_name : Optional[str], optional
         Name of the database that will later be used to refer to the database files, by default None
     
     path_folder : Optional[str], optional
@@ -103,6 +134,12 @@ def create_db(name_db:Optional[str] = None, path_folder:Optional[str] = None, wi
     widgets : Optional[bool], optional
         Whether to display widgets to create the database, by default True
         When False, you will have to pass in arguments for the name_db and path_folder
+
+    
+    Returns
+    -------
+    ipywdigets or string
+    If the parameter "widgets" is set to True, it will return several ipywidgets from which you you will be able to create and register the database. When "widgets" is set to False, it will automatically create and register the database and will return a string.
     """
 
     # Define the python widgets
@@ -110,7 +147,7 @@ def create_db(name_db:Optional[str] = None, path_folder:Optional[str] = None, wi
     wg_name_db = ipw.Text(
         description='Database Name',
         placeholder='Enter a name (without space)',
-        value=name_db,
+        value=db_name,
         layout=Layout(width="50%", height="30px"),
         style=style
     )
@@ -273,7 +310,7 @@ def create_db(name_db:Optional[str] = None, path_folder:Optional[str] = None, wi
     else:
 
         # Stop the script if name_db is missing
-        if name_db == None:
+        if db_name == None:
             print('Please enter a valid name_db value.')
             return
         
@@ -288,16 +325,22 @@ def create_db(name_db:Optional[str] = None, path_folder:Optional[str] = None, wi
             return
 
         # Run the functions previously defined
-        register_db(name_db=name_db, path_folder=path_folder)
+        register_db(name_db=db_name, path_folder=path_folder)
         create_db_files(path_folder=path_folder) 
 
         # Print output messages
-        print(f'The database {name_db} was created and recorded in the db_config.json file.')
+        print(f'The database {db_name} was created and recorded in the db_config.json file.')
         print(f'The database files have been created in the following folder: {path_folder}')
 
 
 def get_config_file():
     """Retrieve the content of the db_config.json file, which contains information related to the databases that you created. The name and the folder path of each registered databases is stored in this json file.    
+
+    
+    Returns
+    -------
+    A dictionary
+    It returns the content of the db_config.json file as a python dictionary object.
     """
     
     with open(config_file, 'r') as file:
@@ -306,7 +349,15 @@ def get_config_file():
 
 
 def get_db_names():
-    """Retrieve the names of the registered databases."""
+    """Retrieve the names of the registered databases.
+    
+    No arguments is required.
+
+    Returns
+    -------
+    List
+    It returns the names of the registered databases as string inside a list.
+    """
 
     config_file = Path(__file__).parent / 'db_config.json'
 
@@ -321,8 +372,30 @@ def get_db_names():
 
 
 def delete_db(db_name:Optional[str] = None):
-    """Remove a database from the db_config.json file."""
+    """Remove a database from the db_config.json file. It does not delete the database files, you will have to manually delete these files.
 
+
+    Parameters
+    ----------
+    db_name : Optional[str], optional
+        Name of the database that you wish to delete, by default None
+    
+    
+    Returns
+    -------
+    ipywdigets
+    It returns ipywidget objects from which you can select the name of the database to be deleted and confirm its removal from the db_config.json file.
+    """
+
+    existing_db_names = get_db_names()
+
+    if isinstance(db_name, str) and db_name not in existing_db_names:
+
+        print(f'The db_name you entered ({db_name}) is not valid. The db_name parameter has been reassigned to None to allow you to select a database name from the ipywidget dropdown.')
+
+        db_name = None
+
+    
     wg_name_db = ipw.Dropdown(
         description = 'DB name',
         value = db_name,
@@ -374,7 +447,7 @@ def delete_db(db_name:Optional[str] = None):
 
 
 def update_db_folder(db_name:Optional[str] = None, path_folder:Optional[str] = None, widgets:Optional[bool] = True):
-    """Modify the database info stored in the db_config.json file. Only works if some databases are already registered.
+    """Modify the path_folder of an existing database registered in the db_config.json file. Select the database name and enter a new path_folder.
 
     Parameters
     ----------
@@ -387,6 +460,11 @@ def update_db_folder(db_name:Optional[str] = None, path_folder:Optional[str] = N
     wdigets : Optional[bool], optional
         Whether to use the ipywidgets, by default True
         When False, it automatically modify the database info based on the given parameter values.
+
+    Returns
+    -------
+    ipywdigets or string
+    If the parameter "widgets" is set to True, it will return several ipywidgets from which you you will be able to update the path folder of the database files. When "widgets" is set to False, it will automatically update the folder and will return a string.
     """
 
     existing_db_names = get_config_file()['databases']
@@ -421,10 +499,6 @@ def update_db_folder(db_name:Optional[str] = None, path_folder:Optional[str] = N
     )
 
     button_record_output = ipw.Output()
-
-
-
-
     
 
     if widgets:
@@ -436,6 +510,13 @@ def update_db_folder(db_name:Optional[str] = None, path_folder:Optional[str] = N
 
             button_record_output.clear_output(wait=True)
 
+            # check whether the path folder is valid
+            if not Path(wg_path_folder.value).exists(): 
+                with button_record_output:
+                    print(f'The path you entered ({wg_path_folder.value}) is not valid. Make sure it exists. Process aborted !')
+                return
+
+            # open the config file
             with open(config_file, "r") as f:
                 config = json.load(f)
 
@@ -451,7 +532,7 @@ def update_db_folder(db_name:Optional[str] = None, path_folder:Optional[str] = N
                 json.dump(config, f, indent=4)
                 
             with button_record_output:
-                print(f'Database info ({wg_name_db.value}) recorded in the db_config.json file.')
+                print(f'The new path_folder ({wg_path_folder.value}) has been successfully recorded in the db_config.json file.')
 
             
         recording.on_click(button_record_pressed)
@@ -460,6 +541,12 @@ def update_db_folder(db_name:Optional[str] = None, path_folder:Optional[str] = N
         display(ipw.HBox([recording, button_record_output]))
 
     else:
+
+        # check whether the path folder is valid
+        if not Path(wg_path_folder.value).exists():            
+            print(f'The path you entered ({wg_path_folder.value}) is not valid. Make sure it exists. Process aborted !')
+            return
+
         with open(config_file, "r") as f:
             config = json.load(f)
 
@@ -475,16 +562,17 @@ def update_db_folder(db_name:Optional[str] = None, path_folder:Optional[str] = N
             json.dump(config, f, indent=4)
 
 
+####### DB CLASS #######
 
 class DB:
 
-    def __init__(self, name_db:Optional[str] = None, config_file:Optional[str] = Path(__file__).parent / 'db_config.json') -> None:
+    def __init__(self, db_name:Optional[str] = None, config_file:Optional[str] = Path(__file__).parent / 'db_config.json') -> None:
         """Instantiate a DB class object.
 
         Parameters
         ----------
 
-        name_db : Optional[str]
+        db_name : Optional[str]
             Name of the databases, by default None
             When None, it retrieves the first databases info registered in the db_config.json file
         
@@ -492,7 +580,8 @@ class DB:
             Location of the configuration file, by default Path(__file__).parent/'db_config.json'
                 
         """
-        self.name_db = name_db       
+
+        self.db_name = db_name       
         self.config_file = config_file
 
         # Check whether the db_config.json file exists
@@ -506,14 +595,14 @@ class DB:
         # Check whether the name_db value is valid or select the first registered database name
         existing_dbs = get_db_names()
         
-        if name_db == None:
-            self.name_db = get_db_names()[0]    # Select the first registered database name    
+        if db_name == None:
+            self.db_name = get_db_names()[0]    # Select the first registered database name    
             
-        elif self.name_db not in existing_dbs:
-            print(f'The name_db value you entered ({self.name_db}) has not been registered. Please select a registered database name.')
+        elif self.db_name not in existing_dbs:
+            print(f'The name_db value you entered ({self.db_name}) has not been registered. Please select a registered database name.')
             return
         
-        self.folder_db = Path(get_config_file()['databases'][self.name_db]['path_folder'])
+        self.folder_db = Path(get_config_file()['databases'][self.db_name]['path_folder'])
 
     
     def _init_config(self):
@@ -526,7 +615,7 @@ class DB:
         
     
     def __repr__(self):
-        return f'DB class - name = {self.name_db}  - folder = {self.folder_db}'
+        return f'DB class - name = {self.db_name}  - folder = {self.folder_db}'
 
     
     def add_creators(self):
@@ -594,7 +683,7 @@ class DB:
 
 
     def add_devices(self):
-        """Record a new device in the devices.txt file
+        """Record a new analytical device in the devices.txt file
         """
 
         # Function to update the text file if the initials are unique
@@ -1845,6 +1934,14 @@ class DB:
     
            
     def get_creators(self):
+        """Retrieve the registered creators of objects.
+
+        Returns
+        -------
+        pandas dataframe
+            It returns the surname and name of the creators inside a two-columns dataframe.
+        """
+
         if (Path(self.folder_db) / 'object_creators.txt').exists():
             df_creators = pd.read_csv(Path(self.folder_db) / 'object_creators.txt')
             return df_creators
@@ -1855,6 +1952,13 @@ class DB:
 
     
     def get_users(self):
+        """Retrieve the registered users.
+
+        Returns
+        -------
+        pandas dataframe
+            It returns the name,surname, and initials of the users inside a three-columns dataframe.
+        """
         
         filename = 'users_info.txt'
         if (Path(self.folder_db) / filename).exists():
@@ -1867,6 +1971,13 @@ class DB:
         
 
     def get_institutions(self):
+        """Retrieve the registered institutions.
+
+        Returns
+        -------
+        pandas dataframe
+            It returns the name and acronym of the institutions inside a two-columns dataframe.
+        """
 
         if (Path(self.folder_db) / 'institutions.txt').exists():
             df_institutions = pd.read_csv(Path(self.folder_db) / 'institutions.txt')
@@ -1878,6 +1989,13 @@ class DB:
 
 
     def get_devices(self):
+        """Retrieve the registered analytical devices.
+
+        Returns
+        -------
+        pandas dataframe
+            It returns the information regarding the devices inside a dataframe.
+        """
 
         if (Path(self.folder_db) / 'devices.txt').exists():
             df_devices = pd.read_csv(Path(self.folder_db) / 'devices.txt')
@@ -1889,6 +2007,13 @@ class DB:
 
 
     def get_lamps(self):
+        """Retrieve the registered lamps.
+
+        Returns
+        -------
+        pandas dataframe
+            It returns the ID and description of the lamps inside a two-columns dataframe.
+        """
 
         if (Path(self.folder_db) / 'lamps.txt').exists():
             df_lamps = pd.read_csv(Path(self.folder_db) / 'lamps.txt')
@@ -1900,7 +2025,12 @@ class DB:
     
     
     def get_materials(self):
-        """Retrieve the object materials.
+        """Retrieve the registered materials.
+
+        Returns
+        -------
+        List
+            It returns the materials as strings inside a list.
         """
         
         materials_filename = 'object_materials.txt'
@@ -1916,12 +2046,12 @@ class DB:
 
     
     def get_methods(self):
-        """Retrieve the scientific methods to analyze objects.
+        """Retrieve the registered scientific methods used to analyze objects.
 
         Returns
         -------
         pandas dataframe
-            info about registered methods.
+            It returns the name and acronym of the analytical methods inside a two-columns dataframe.
         """
 
         databases_folder = self.folder_db
@@ -2132,6 +2262,13 @@ class DB:
     
     
     def get_white_standards(self):
+        """Retrieve the registered white standards.
+
+        Returns
+        -------
+        pandas dataframe
+            It returns the ID and description of the white standards inside a two-columns dataframe.
+        """
 
         if (Path(self.folder_db) / 'white_standards.txt').exists():
             df_references = pd.read_csv(Path(self.folder_db) / 'white_standards.txt')
@@ -2143,7 +2280,12 @@ class DB:
 
     
     def get_techniques(self):
-        """Retrieve the techniques used to create the objects.
+        """Retrieve the registered techniques used to create the objects.
+
+        Returns
+        -------
+        List
+            It returns the techniques as strings inside a list.
         """
         
         techniques_filename = 'object_techniques.txt'
@@ -2159,7 +2301,12 @@ class DB:
         
 
     def get_types(self):
-        """Retrieve the object types.
+        """Retrieve the registered types of objects.
+
+        Returns
+        -------
+        List
+            It returns the types as strings inside a list.
         """
         
         types_filename = 'object_types.txt'
@@ -2174,30 +2321,119 @@ class DB:
             return types
 
     
-    def update_projects(self, column:str, new_value: str, project_id:Union[str,list] = 'all'):
+    def update_projects(self, project_id:Union[str,list] = 'all', column:Optional[str] = None, new_value:Optional[str] = None, widgets:Optional[bool] = True):
         """Update the content of the projects_info.csv file.
 
         Parameters
         ----------
-        column : str
-            Select which column should be updated
-        
-        new_value : str
-            New value to be written in the projects_info.csv file
         
         project_id : Union[str,list], optional
             Select which project_id(s) (i.e. row(s)) should be updated, by default 'all'
             If you only wish to update the value for a single project, you can enter the project_id as a string.
             If you wish to update the value for several projects, enter the project_ids as strings inside a list
             When 'all', it will the update the value for all the projects.
-        """       
         
-        if (Path(self.folder_db) / 'projects_info.csv').exists():
-            
-            db_projects = self.get_projects().set_index('project_id')
+        column : Optional[str], optional
+            Select which column (parameter) should be updated, by default None
+        
+        new_value : Optional[str], optional
+            New value to be written in the projects_info.csv file, by default None
 
+        widgets : Optional[bool], optional
+            Whether to display widgets to update the projects database file, by default True
+            When False, you will have to pass in arguments for the project_id, the column, and the new_value
+                    
+        
+        Returns
+        -------
+        ipywdigets or string
+        If the parameter "widgets" is set to True, it will return several ipywidgets from which you you will be able to update the content of the projects database file. When "widgets" is set to False, it will automatically update the content of the file with requested input (project_id, column, and new_value) and it will return a string.
+        """   
+
+        if not (Path(self.folder_db) / 'projects_info.csv').exists():
+            print(f'The file "projects_info.csv" is missing in your databases folder ({self.folder_db}). Either add the file to the folder or recreate the database.')
+
+            return
+        
+        db_projects = self.get_projects().set_index('project_id')
+        project_ids = tuple(db_projects.index)
+
+
+        def update_project_info(project_id:str, parameter:str, new_value:str):
+
+            if project_id not in project_ids:
+                print(f'Error ! The project ID ({project_id}) is not registered in the projects_info.csv file.')
+                return
+                
+            db_projects.loc[project_id, parameter] = new_value 
+            db_projects.to_csv(Path(self.folder_db) / 'projects_info.csv',index=True)
+
+    
+        if widgets:
+            
+            wg_project_ids = ipw.Combobox(
+                placeholder='Select a project id',
+                options=project_ids,              
+                description='Project id',
+                ensure_option=False,
+                disabled=False,
+                layout=Layout(width="50%", height="30px"),
+                style=style,
+            )
+
+            wg_project_columns = ipw.Dropdown(
+                placeholder='Select a parameter',
+                options= db_projects.columns,              
+                description='Project parameter',
+                ensure_option=False,
+                disabled=False,
+                layout=Layout(width="50%", height="30px"),
+                style=style,
+            )
+
+            wg_new_value = ipw.Text(
+                description='New value',
+                placeholder='Enter a new value for the selected parameter',
+                layout=Layout(width="50%", height="30px"),
+                style=style,
+
+            )
+
+            wg_updating = ipw.Button(
+                description='Update project',
+                disabled=False,
+                button_style='', # 'success', 'info', 'warning', 'danger' or ''
+                tooltip='Click me',            
+            )
+
+            button_record_output = ipw.Output()
+
+            def button_record_pressed(b):
+                """
+                Update the project info.
+                """
+
+                button_record_output.clear_output(wait=True)
+
+                update_project_info(wg_project_ids.value, wg_project_columns.value, wg_new_value.value)
+
+
+                with button_record_output:
+                    
+                    print(f'A new value "{wg_new_value.value}" has been successfully reassigned to the parameter "{wg_project_columns.value}" of the project "{wg_project_ids.value}".')
+
+            wg_updating.on_click(button_record_pressed)
+
+            display(wg_project_ids,wg_project_columns, wg_new_value)
+            display(ipw.HBox([wg_updating, button_record_output]))
+
+
+
+        else:    
+        
             if project_id == 'all':
                 project_id = db_projects.index
+
             elif isinstance(project_id, str):
                 project_id = [project_id]
 
@@ -2214,31 +2450,116 @@ class DB:
             db_projects.to_csv(Path(self.folder_db) / 'projects_info.csv',index=True)
             print('projects_info.csv file successfully updated.')
 
-        else:
-            print('No databases have been created yet.')
         
-
-    def update_objects(self, column:str, new_value: str, project_id:Union[str,list] = 'all'):
+    
+    def update_objects(self, object_id:Union[str,list] = 'all', column:Optional[str] = None, new_value:Optional[str] = None,  widgets:Optional[bool] = True):
         """Update the content of the objects_info.csv file.
 
         Parameters
         ----------
-        column : str
-            Select which column should be updated
-        
-        new_value : str
-            New value to be written in the objects_info.csv file
-        
         object_id : Union[str,list], optional
             Select which object_id(s) (i.e. row(s)) should be updated, by default 'all'
             If you only wish to update the value for a single object, you can enter the object_id as a string.
             If you wish to update the value for several objects, enter the object_ids as strings inside a list
             When 'all', it will the update the value for all the objects.
-        """       
         
-        if (Path(self.folder_db) / 'objects_info.csv').exists():
+        column : Optional[str], optional
+            Select which column (parameter) should be updated, by default None
+        
+        new_value : Optional[str], optional
+            New value to be written in the objects_info.csv file, by default None
+                
+        widgets : Optional[bool], optional
+            Whether to display widgets to update the objects database file, by default True
+            When False, you will have to pass in arguments for the object_id, the column, and the new_value
+                    
+        
+        Returns
+        -------
+        ipywdigets or string
+        If the parameter "widgets" is set to True, it will return several ipywidgets from which you you will be able to update the content of the objects database file. When "widgets" is set to False, it will automatically update the content of the file with requested input (object_id, column, and new_value) and it will return a string.
+
+        """  
+
+        if not (Path(self.folder_db) / 'objects_info.csv').exists():
+            print(f'The file "objects_info.csv" is missing in your databases folder ({self.folder_db}). Either add the file to the folder or recreate the database.')
+
+            return
+        
+        db_objects = self.get_objects().set_index('object_id')
+        object_ids = tuple(db_objects.index)
+
+
+        def update_object_info(object_id:str, parameter:str, new_value:str):
+
+            if object_id not in object_ids:
+                print(f'Error ! The object ID ({object_id}) is not registered in the objects_info.csv file.')
+                return
+                
+            db_objects.loc[object_id, parameter] = new_value 
+            db_objects.to_csv(Path(self.folder_db) / 'objects_info.csv', index=True)
+
+
+        if widgets:
             
-            db_objects = self.get_objects().set_index('object_id')
+            wg_object_ids = ipw.Combobox(
+                placeholder='Select an object id',
+                options=object_ids,              
+                description='Object id',
+                ensure_option=False,
+                disabled=False,
+                layout=Layout(width="50%", height="30px"),
+                style=style,
+            )
+
+            wg_object_columns = ipw.Dropdown(
+                placeholder='Select a parameter',
+                options= db_objects.columns,              
+                description='Object parameter',
+                ensure_option=False,
+                disabled=False,
+                layout=Layout(width="50%", height="30px"),
+                style=style,
+            )
+
+            wg_new_value = ipw.Text(
+                description='New value',
+                placeholder='Enter a new value for the selected parameter',
+                layout=Layout(width="50%", height="30px"),
+                style=style,
+
+            )
+
+            wg_updating = ipw.Button(
+                description='Update Object',
+                disabled=False,
+                button_style='', # 'success', 'info', 'warning', 'danger' or ''
+                tooltip='Click me',            
+            )
+
+            button_record_output = ipw.Output()
+
+            def button_record_pressed(b):
+                """
+                Update the object info.
+                """
+
+                button_record_output.clear_output(wait=True)
+
+                update_object_info(wg_object_ids.value, wg_object_columns.value, wg_new_value.value)
+
+
+                with button_record_output:
+                    
+                    print(f'A new value "{wg_new_value.value}" has been successfully reassigned to the parameter "{wg_object_columns.value}" of the object "{wg_object_ids.value}".')
+
+            wg_updating.on_click(button_record_pressed)
+
+            display(wg_object_ids,wg_object_columns, wg_new_value)
+            display(ipw.HBox([wg_updating, button_record_output]))
+
+
+        else:        
 
             if object_id == 'all':
                 object_id = db_objects.index
@@ -2255,11 +2576,8 @@ class DB:
                 db_objects.loc[object, column] = new_value         
             
             
-            db_objects.to_csv(Path(self.folder_db) / 'objects_info.csv',index=True)
+            db_objects.to_csv(Path(self.folder_db) / 'objects_info.csv', index=True)
             print('objects_info.csv file successfully updated.')
-
-        else:
-            print('No databases have been created yet.')
 
 
     def delete_creators(self):
