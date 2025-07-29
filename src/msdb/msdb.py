@@ -845,7 +845,13 @@ class DB:
     
     def add_lamps(self):
         """Record a new lamp in the lamps.txt file
+
+        Returns
+        -------
+        ipywidgets
+            fill in the ID and description of the lamp to be registered. 
         """
+        
 
         # Function to get the existing lamps ID from the file
         def get_existing_lamps():
@@ -924,9 +930,15 @@ class DB:
     def add_materials(self, name:Optional[str] = None):
         """Register a new object material.
 
+        Parameters
+        ----------
+        name : Optional[str], optional
+            Name of the material, by default None
+            When None, the ipywidget text will be empty and you will have to fill it.
+
         Returns
         -------
-        ipywdigets
+        ipywidgets
             fill in the name of the material to be registered. 
         """
 
@@ -1081,7 +1093,19 @@ class DB:
     
     
     def add_objects(self, project_id:Optional[str] = ''):
-        """Add a new object in the objects_info.csv file"""
+        """Add a new object in the database file 'objects_info.csv'
+
+        Parameters
+        ----------
+        project_id : Optional[str], optional
+            Project ID related to the object, by default ''
+            If the object is not coupled to a given project, then it falls under the 'noProject' category.
+
+        Returns
+        -------
+        ipywidgets
+            It returns several ipywidgets inside one can enter the information related to the object.
+        """
 
         db_projects = self.get_projects()
         projects_list = ['noProject'] + list(db_projects['project_id'].values)
