@@ -73,6 +73,7 @@ def register_db_name(db_name:Optional[str] = None, db_path:Optional[str] = None,
 
 
     def add_new_db(name,path):
+        
         # check whether the path folder is valid
         if not Path(path).exists():
             with button_record_output:
@@ -1104,11 +1105,11 @@ class DB:
         Returns
         -------
         ipywidgets
-            It returns several ipywidgets inside one can enter the information related to the object.
+            It returns several ipywidgets inside which one can enter the information related to the object.
         """
 
         db_projects = self.get_projects()
-        projects_list = ['noProject'] + list(db_projects['project_id'].values)
+        projects_list = list(db_projects['project_id'].values)
 
         db_objects = self.get_objects()
         existing_columns = list(db_objects.columns)
@@ -1135,7 +1136,7 @@ class DB:
             value = project_id,
             placeholder='Project',
             options = projects_list,
-            description = 'Project id',
+            description = 'Project ID',
             ensure_option=False,
             disabled=False,
             layout=Layout(width="99%", height="30px"),
@@ -1145,7 +1146,7 @@ class DB:
         object_id = ipw.Text(        
             value='',
             placeholder='Inv. N°',
-            description='Id',
+            description='Object ID',
             disabled=False,
             layout=Layout(width="99%", height="30px"),
             style=style,   
@@ -1160,10 +1161,30 @@ class DB:
             style=style,
         )    
 
-        object_creator = ipw.Combobox(
+        object_creator1 = ipw.Combobox(
             placeholder = 'Surname, Name',
             options = creators,
-            description = 'Creator',
+            description = 'Creator 1',
+            ensure_option=False,
+            disabled=False,
+            layout=Layout(width="99%", height="30px"),
+            style=style,
+        ) 
+
+        object_creator2 = ipw.Combobox(
+            placeholder = 'Surname, Name (optional)',
+            options = creators,
+            description = 'Creator 2',
+            ensure_option=False,
+            disabled=False,
+            layout=Layout(width="99%", height="30px"),
+            style=style,
+        ) 
+
+        object_creator3 = ipw.Combobox(
+            placeholder = 'Surname, Name (optional)',
+            options = creators,
+            description = 'Creator 3',
             ensure_option=False,
             disabled=False,
             layout=Layout(width="99%", height="30px"),
@@ -1233,7 +1254,7 @@ class DB:
             ensure_option=False,
             rows=6,
             disabled=False,
-            layout=Layout(width="99%", height="140px"),
+            layout=Layout(width="99%", height="160px"),
             style=style,
         ) 
 
@@ -1252,7 +1273,7 @@ class DB:
             ensure_option=False,
             rows=6,
             disabled=False,
-            layout=Layout(width="99%", height="140px"),
+            layout=Layout(width="99%", height="160px"),
             style=style,
         )
 
@@ -1273,7 +1294,7 @@ class DB:
             disabled=False,
             button_style='', # 'success', 'info', 'warning', 'danger' or ''
             tooltip='Click me to remove the selected techniques',
-            icon='check',
+            icon='',  # 'check'
             layout=Layout(width="35%", height="30px"),
             style=style,
         )   
@@ -1284,7 +1305,7 @@ class DB:
             disabled=False,
             button_style='', # 'success', 'info', 'warning', 'danger' or ''
             tooltip='Click me to remove the selected materials',
-            icon='check',
+            icon='',
             layout=Layout(width="35%", height="30x"),
             style=style,
         ) 
@@ -1354,13 +1375,20 @@ class DB:
         def button_record_pressed(b):
             """
             Save the object info in the object database file (objects_info.csv).
-            """
+            """        
+            
 
             with button_record_output:
                 button_record_output.clear_output(wait=True)
 
                 db_objects_file = self.folder_db / 'objects_info.csv'
-                db_objects = pd.read_csv(db_objects_file)            
+                db_objects = pd.read_csv(db_objects_file)    
+
+                # Check whether object_id is unique
+                if object_id.value in db_objects['object_id'].values:
+                    with button_record_output:
+                        print(f'Object not recorded: the object ID you entered ({object_id.value}) has already been assigned.')
+                    return
                                 
                 creators = [f'{x[0]}, {x[1]}' if isinstance(x[1],str) else x[0] for x in self.get_creators().values]
 
@@ -1368,8 +1396,17 @@ class DB:
                 owners = owners_file             
 
                 types_file = open(self.folder_db / r'object_types.txt', 'r').read().splitlines()
-                types = types_file       
-                                                       
+                types = types_file    
+
+                if object_creator2.value == '':
+                    object_creators = object_creator1.value
+
+                elif object_creator3.value == '':
+                    object_creators = '_'.join([object_creator1.value, object_creator2.value])
+                
+                else:
+                    object_creators = '_'.join([object_creator1.value, object_creator2.value, object_creator3.value])       
+                                                     
 
                 new_row = pd.DataFrame({                    
                     'project_id': project_id.value,
@@ -1379,7 +1416,7 @@ class DB:
                     "object_technique": "_".join(object_techniques_selected.options),
                     "object_title": object_title.value,
                     'object_name': object_name.value,
-                    'object_creator': object_creator.value,                        
+                    'object_creator': object_creators,                        
                     'object_date': object_date.value,
                     'object_owner': object_owner.value,
                     'object_material': "_".join(object_materials_selected.options)},                       
@@ -1387,11 +1424,11 @@ class DB:
                     ) 
 
 
-                if object_creator.value not in creators:                    
+                if object_creator1.value not in creators:
 
-                    creator_surname = object_creator.value.split(',')[0].strip()
+                    creator_surname = object_creator1.value.split(',')[0].strip()
                     try:
-                        creator_name = object_creator.value.split(',')[1].strip()
+                        creator_name = object_creator1.value.split(',')[1].strip()
                     except IndexError:
                         creator_name = ''
                     
@@ -1399,6 +1436,18 @@ class DB:
                     df_creators = pd.concat([df_creators, pd.DataFrame(data=[creator_surname,creator_name], index=['surname','name']).T])
                     df_creators.to_csv(self.folder_db / 'object_creators.txt', index=False)
                                
+                if object_creator2.value not in creators:
+
+                    creator_surname = object_creator2.value.split(',')[0].strip()
+                    try:
+                        creator_name = object_creator2.value.split(',')[1].strip()
+                    except IndexError:
+                        creator_name = ''
+                    
+                    df_creators = pd.read_csv(self.folder_db / 'object_creators.txt')
+                    df_creators = pd.concat([df_creators, pd.DataFrame(data=[creator_surname,creator_name], index=['surname','name']).T])
+                    df_creators.to_csv(self.folder_db / 'object_creators.txt', index=False)
+
 
                 if object_type.value not in types:
                     types.append(str(object_type.value))
@@ -1421,9 +1470,9 @@ class DB:
 
         display(
             ipw.HBox([
-                ipw.VBox([object_id,project_id,object_creator,object_date,object_owner,object_category,object_type,object_title, object_name], layout=Layout(width="30%", height="370px"), style=style,),
-                ipw.VBox([ipw.HBox([object_techniques,remove_technique_button]),object_techniques_selected,ipw.HBox([object_materials,remove_material_button]),object_materials_selected], layout=Layout(width="30%", height="370px"), style=style),
-                ipw.VBox([*[widget for widget in additional_param_widgets.values()]], layout=Layout(width="30%", height="370px"), style=style)
+                ipw.VBox([object_id,project_id,object_creator1,object_creator2,object_creator3,object_date,object_owner,object_category,object_type,object_title, object_name], layout=Layout(width="30%", height="400px"), style=style,),
+                ipw.VBox([ipw.HBox([object_techniques,remove_technique_button]),object_techniques_selected,ipw.HBox([object_materials,remove_material_button]),object_materials_selected], layout=Layout(width="30%", height="400px"), style=style),
+                ipw.VBox([*[widget for widget in additional_param_widgets.values()]], layout=Layout(width="30%", height="400px"), style=style)
                 ]))
                 
         display(ipw.HBox([recording, button_record_output]))
@@ -1516,7 +1565,20 @@ class DB:
 
 
     def add_projects(self, project_id:Optional[str] = None):
-        """Add a new project in the projects_info.csv file"""
+        """Add a new project in the projects_info.csv file
+
+        Parameters
+        ----------
+        project_id : Optional[str], optional
+            ID number of the new project, by default None
+
+
+        Returns
+        -------
+        ipywidgets
+            It returns several ipywidgets inside which one can enter the information related to the project.
+        
+        """
 
         db_projects = self.get_projects()
         existing_columns = list(db_projects.columns)
@@ -1800,6 +1862,11 @@ class DB:
     
     def add_types(self, name:Optional[str] = None):
         """Register a new object type.
+
+        Parameters
+        ----------
+        name : Optional[str], optional
+            name of the object type, by default None
 
         Returns
         -------
